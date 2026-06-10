@@ -18,8 +18,14 @@ public class QuartoSimples extends Quarto {
     @Override
     public double calcularDiaria(){
         if(isPossuiArCondicionado()){
-            return getPrecoBase() * 1.5;
+            return getPrecoBase() * 1.2;
         }
         return getPrecoBase();
+    }
+
+    @Override
+    public String exibirDescricao(){
+        return "Quarto Simples número: "+ getNumero() +
+        "/nCom capacidade para " + getCapacidade() + "pessoas."
     }
 }
