@@ -4,6 +4,13 @@ public abstract class Quarto implements Reservavel {
     private int capacidade;
     private String status;
 
+    public Quarto(int numero, double precoBase, int capacidade) {
+        this.numero = numero;
+        this.precoBase = precoBase;
+        this.capacidade = capacidade;
+        this.status = "disponivel";
+    }
+
     public int getNumero(){
         return numero;
     }
@@ -46,6 +53,4 @@ public abstract class Quarto implements Reservavel {
     public abstract double calcularDiaria();
 
     public abstract String exibirDescricao();
-
-    
 }
