@@ -46,4 +46,6 @@ public abstract class Quarto implements Reservavel {
     public abstract double calcularDiaria();
 
     public abstract String exibirDescricao();
+
+    
 }
