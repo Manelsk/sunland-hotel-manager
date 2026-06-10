@@ -50,6 +50,16 @@ public abstract class Quarto implements Reservavel {
         return "disponivel".equals(status);
     }
 
+    public void reservar(){
+        System.out.println("Quarto " + getNumero() + " reservado.");
+        setStatus("reservado");
+    }
+
+    public void liberar(){
+        System.out.println("Quarto " + getNumero() + " liberado.");
+        setStatus("disponivel");
+    }
+
     public abstract double calcularDiaria();
 
     public abstract String exibirDescricao();
