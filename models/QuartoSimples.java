@@ -17,7 +17,7 @@ public class QuartoSimples extends Quarto {
 
     @Override
     public double calcularDiaria(){
-        if(getArCondicionado()){
+        if(isPossuiArCondicionado()){
             return getPrecoBase() * 1.5;
         }
         return getPrecoBase();
