@@ -1,3 +1,5 @@
+package models;
+
 public class Suite extends Quarto{
     
     private String tipoSuite;

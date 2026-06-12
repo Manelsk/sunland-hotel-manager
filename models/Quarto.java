@@ -1,3 +1,5 @@
+package models;
+
 public abstract class Quarto implements Reservavel {
     private int numero;
     private double precoBase;
