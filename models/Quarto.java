@@ -7,19 +7,9 @@ public abstract class Quarto implements Reservavel {
     private String status;
 
     public Quarto(int numero, double precoBase, int capacidade) {
-        if(numero>=0){
-            this.numero = numero; 
-        }
-        
-        if(precoBase>=0){
-            this.precoBase = precoBase;
-        }
-        
-        if(capacidade>0){
-            this.capacidade = capacidade;
-        }
-    
-        this.status = "disponivel";
+        setNumero(numero);
+        setPrecoBase(precoBase);
+        setStatus("disponivel");
     }
 
     public int getNumero(){
@@ -61,9 +51,6 @@ public abstract class Quarto implements Reservavel {
     }
 
     public boolean estaDisponivel() {
-        if (status == null) {
-            return false;
-        }
         return "disponivel".equals(status);
     }
 
@@ -77,8 +64,10 @@ public abstract class Quarto implements Reservavel {
     }
 
     public void liberar(){
-        System.out.println("Quarto " + getNumero() + " liberado.");
-        setStatus("disponivel");
+        if("reservado".equals(status)){
+            System.out.println("Quarto " + getNumero() + " liberado.");
+            setStatus("disponivel");
+        }
     }
 
     public abstract double calcularDiaria();
