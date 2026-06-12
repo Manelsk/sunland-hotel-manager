@@ -28,6 +28,6 @@ public class QuartoSimples extends Quarto {
     @Override
     public String exibirDescricao(){
         return "Quarto Simples número: "+ getNumero() +
-        "/nCom capacidade para " + getCapacidade() + "pessoas.";
+        "\nCom capacidade para " + getCapacidade() + "pessoas.";
     }
 }
