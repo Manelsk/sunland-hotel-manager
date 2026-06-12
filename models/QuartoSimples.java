@@ -27,7 +27,8 @@ public class QuartoSimples extends Quarto {
 
     @Override
     public String exibirDescricao(){
-        return "Quarto Simples número: "+ getNumero() +
-        "\nCom capacidade para " + getCapacidade() + "pessoas.";
+        return "Quarto Simples número: "+ getNumero() 
+        + "\nCom capacidade para " + getCapacidade() + " pessoas." 
+        + "\nAr condicionado: " + (possuiArCondicionado ? "Sim" : "Não");
     }
 }
