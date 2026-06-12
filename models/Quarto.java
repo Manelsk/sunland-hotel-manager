@@ -29,24 +29,24 @@ public abstract class Quarto implements Reservavel {
     }
 
     public void setNumero(int numero) {
-        if(numero>=0){
-            this.numero = numero; 
-        }else{
+        if(numero<0){
             throw new IllegalArgumentException("Numero inválido.");
         }
+        
+        this.numero = numero; 
     }
     
     public void setPrecoBase(double precoBase) {
-        if(precoBase>=0){
+        if(precoBase<0){
             throw new IllegalArgumentException("Preco não pode ser negativo.");
         }
-        
+
         this.precoBase = precoBase;
     }
 
     public void setCapacidade(int capacidade) {
-        if(capacidade>0){
-            throw new IllegalArgumentException("Capacidade não pode ser menor que 1.");
+        if(capacidade<0){
+            throw new IllegalArgumentException("Capacidade deve ser maior que zero.");
         }
         this.capacidade = capacidade;
     }
@@ -55,6 +55,7 @@ public abstract class Quarto implements Reservavel {
         if(!"disponivel".equals(status) && !"reservado".equals(status)){
             throw new IllegalArgumentException("Status inválido.");
         }
+        
         this.status = status;
     }
 
