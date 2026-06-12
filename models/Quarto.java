@@ -51,7 +51,7 @@ public abstract class Quarto implements Reservavel {
         this.capacidade = capacidade;
     }
 
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         if(!"disponivel".equals(status) && !"reservado".equals(status)){
             throw new IllegalArgumentException("Status inválido.");
         }
@@ -65,16 +65,12 @@ public abstract class Quarto implements Reservavel {
 
     public void reservar(){
         if("disponivel".equals(status)){
-            System.out.println("Quarto " + getNumero() + " reservado.");
             setStatus("reservado");
-        }else{
-            System.out.println("Quarto "+ getNumero() + " esta indisponível");
         }
     }
 
     public void liberar(){
         if("reservado".equals(status)){
-            System.out.println("Quarto " + getNumero() + " liberado.");
             setStatus("disponivel");
         }
     }
