@@ -11,7 +11,7 @@ public class QuartoSimples extends Quarto {
     }
 
     public QuartoSimples(int numero, double precoBase, int capacidade, boolean possuiArCondicionado) {
-        super(numero, precoBase, capacidade, "disponivel");
+        super(numero, precoBase, capacidade);
         this.possuiArCondicionado = possuiArCondicionado;
     }
 
@@ -26,6 +26,6 @@ public class QuartoSimples extends Quarto {
     @Override
     public String exibirDescricao(){
         return "Quarto Simples número: "+ getNumero() +
-        "/nCom capacidade para " + getCapacidade() + "pessoas."
+        "/nCom capacidade para " + getCapacidade() + "pessoas.";
     }
 }

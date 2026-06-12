@@ -11,7 +11,7 @@ public class Suite extends Quarto{
     }
 
     public Suite(int numero, double precoBase, int capacidade, String tipoSuite) {
-        super(numero, precoBase, capacidade, "disponivel");
+        super(numero, precoBase, capacidade);
         this.tipoSuite = tipoSuite;
     }
 
