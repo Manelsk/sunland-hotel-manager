@@ -5,6 +5,22 @@ public class Hospede {
     private String cpf;
     private String email;
 
+    public static boolean validaCpf(String cpf){
+        if(cpf == null || cpf.trim().isEmpty()) {
+            return false;
+        }
+
+        cpf.replaceAll("\\D", "");
+
+        if(cpf.length() !=11){
+            return false;
+        }
+        
+        return true;
+    }
+    
+
+
     public void setNome(String nome) {
         if(nome == null) {
             throw new IllegalArgumentException("Nome inválido");
