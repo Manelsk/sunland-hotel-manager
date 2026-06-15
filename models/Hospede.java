@@ -5,14 +5,20 @@ public class Hospede {
     private String cpf;
     private String email;
 
+    public Hospede(String nome, String cpf, String email){
+        setNome(nome);
+        setCpf(cpf);
+        setEmail(email);
+    }
+
     public static boolean validaCpf(String cpf){
         if(cpf == null || cpf.trim().isEmpty()) {
             return false;
         }
 
-        cpf.replaceAll("\\D", "");
+        cpf = cpf.replaceAll("\\d", "");
 
-        if(cpf.length() !=11){
+        if(!cpf.matches("\\d{11}")){
             return false;
         }
         
@@ -27,7 +33,7 @@ public class Hospede {
     }
 
     public void setNome(String nome) {
-        if(nome == null) {
+        if(nome == null || nome.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome inválido");
         }
         this.nome = nome;
