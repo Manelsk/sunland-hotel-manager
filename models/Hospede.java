@@ -34,17 +34,14 @@ public class Hospede {
     }
 
     public void setCpf(String cpf) {
-        if(cpf == null) {
+        if(!validaCpf(cpf)){
             throw new IllegalArgumentException("CPF inválido");
-        }
-        if(cpf.length() != 11) {
-            throw new IllegalArgumentException("CPF deve conter 11 dígitos");
         }
         this.cpf = cpf;
     }
 
     public void setEmail(String email) {
-        if(email == null || !email.contains("@") || email.trim().isEmpty() || email.startsWith("@") || email.endsWith("@")){
+        if(!validaEmail(email)){
             throw new IllegalArgumentException("Email inválido");
         }
         this.email = email;
