@@ -21,4 +21,23 @@ public class Hospede {
         }
         this.cpf = cpf;
     }
+
+    public void setEmail(String email) {
+        if(email == null || !email.contains("@") || email.trim().isEmpty() || email.startsWith("@") || email.endsWith("@")){
+            throw new IllegalArgumentException("Email inválido");
+        }
+        this.email = email;
+    }
+
+    public String getEmail(){
+        return email;
+    }
+
+    public String getNome(){
+        return nome;
+    }
+
+    public String getCpf(){
+        return cpf;
+    }
 }
