@@ -4,6 +4,12 @@ public class QuartoDuplo extends Quarto {
     private String tipoCama;
     private boolean possuiVaranda;
 
+    public QuartoDuplo(int numero, double precoBase, int capacidade, String tipoCama, Boolean possuiVaranda){
+        super(numero, precoBase, capacidade);
+        setPossuiVaranda(possuiVaranda);
+        setTipoCama(tipoCama);
+    }
+
     public void setTipoCama(String tipoCama){
         if(!"Casal".equals(getTipoCama())){
             throw new IllegalArgumentException ("Tipo de cama inválido");
