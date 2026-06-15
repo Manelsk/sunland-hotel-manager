@@ -19,7 +19,12 @@ public class Hospede {
         return true;
     }
     
-
+    public static boolean validaEmail(String email){
+        if(email == null || !email.contains("@") || email.trim().isEmpty() || email.startsWith("@") || email.endsWith("@")){
+            return false;
+        }
+        return true;
+    }
 
     public void setNome(String nome) {
         if(nome == null) {
