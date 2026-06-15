@@ -16,7 +16,7 @@ public class Hospede {
             return false;
         }
 
-        cpf = cpf.replaceAll("\\d", "");
+        cpf = cpf.replaceAll("\\D", "");
 
         if(!cpf.matches("\\d{11}")){
             return false;
