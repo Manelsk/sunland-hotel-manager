@@ -15,17 +15,27 @@ public class QuartoDuplo extends Quarto {
         return tipoCama;
     }
 
-    public void setTemVaranda(boolean possuiVaranda){
+    public void setPossuiVaranda(boolean possuiVaranda){
         this.possuiVaranda = possuiVaranda;
     }
 
-    public boolean getTemVaranda(){
+    public boolean isPossuiVaranda(){
         return possuiVaranda;
     }
 
     @Override
     public double calcularDiaria(){
-        if()
+        if(isPossuiVaranda()){
+            return getPrecoBase() * 1.2;
+        }
+        return getPrecoBase();
+    }
+
+    @Override
+    public String exibirDescricao(){
+        return "Quarto Duplo com cama de "+ getTipoCama() 
+        +"\nNúmero "+ getNumero()
+        +"\nPossui varanda? "+ (isPossuiVaranda() ? "Sim" : "Nao");
     }
 
 }
