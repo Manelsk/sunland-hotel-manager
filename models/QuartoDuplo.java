@@ -43,5 +43,4 @@ public class QuartoDuplo extends Quarto {
         +"\nNúmero "+ getNumero()
         +"\nPossui varanda? "+ (isPossuiVaranda() ? "Sim" : "Nao");
     }
-
 }
