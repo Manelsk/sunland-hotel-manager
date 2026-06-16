@@ -7,6 +7,12 @@ public class Hotel {
     private ArrayList<Hospede> hospedes;
     private ArrayList<Reserva> reservas;
 
+    public Hotel() {
+        this.quartos = new ArrayList<>();
+        this.hospedes = new ArrayList<>();
+        this.reservas = new ArrayList<>();
+    }
+    
     public void adicionarQuarto(Quarto quarto) {
         if(quarto == null){
             throw new IllegalArgumentException("Quarto deve ser informado.");
@@ -70,6 +76,5 @@ public class Hotel {
     public ArrayList<Quarto> getQuartos() {
         return quartos;
     }   
-
 }
 
