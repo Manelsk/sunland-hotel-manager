@@ -1,11 +1,12 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Hotel {
-    private ArrayList<Quarto> quartos;
-    private ArrayList<Hospede> hospedes;
-    private ArrayList<Reserva> reservas;
+    private List<Quarto> quartos;
+    private List<Hospede> hospedes;
+    private List<Reserva> reservas;
 
     public Hotel() {
         this.quartos = new ArrayList<>();
@@ -17,7 +18,13 @@ public class Hotel {
         if(quarto == null){
             throw new IllegalArgumentException("Quarto deve ser informado.");
         }
-        quartos.add(quarto);
+        
+        for(Quarto q : quartos){
+            if(q.getNumero() == quarto.getNumero()){
+                throw new IllegalArgumentException("Quarto com numero " + quarto.getNumero() + " já existe, por favor escolha outro numero.");
+            }
+        }
+            quartos.add(quarto);
     }
 
     public void adicionarHospede(Hospede hospede) {
@@ -28,11 +35,11 @@ public class Hotel {
     }
 
     public void criarReserva(Hospede hospede, Quarto quarto, int qtdeDiarias) {
-        if(hospede == null){
-            throw new IllegalArgumentException("Hóspede nao informado ou nao existe.");
+        if(hospedes.contains(hospede) == false){
+            throw new IllegalArgumentException("Hóspede informado nao existe.");
         }
-        if(quarto == null){
-            throw new IllegalArgumentException("Quarto nao informado ou nao existe.");
+        if(quartos.contains(quarto) == false){
+            throw new IllegalArgumentException("Quarto informado nao existe.");
         }
         Reserva reserva = new Reserva(hospede, quarto, qtdeDiarias);
         reservas.add(reserva);
@@ -65,15 +72,15 @@ public class Hotel {
         throw new IllegalArgumentException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
     }
     
-    public ArrayList<Hospede> getHospedes() {
+    public List<Hospede> getHospedes() {
         return hospedes;
     }
 
-    public ArrayList<Reserva> getReservas() {
+    public List<Reserva> getReservas() {
         return reservas;
     }
 
-    public ArrayList<Quarto> getQuartos() {
+    public List<Quarto> getQuartos() {
         return quartos;
     }   
 }
