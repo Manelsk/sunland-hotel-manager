@@ -13,12 +13,12 @@ public class Reserva{
         this.estadoReserva = "Pendente";
     }
 
-    public void Confirmareserva() {
-        if("Pendente".equals(estadoReserva)) {
+    public void confirmareserva() {
+        if(quarto.estaDisponivel() && "Pendente".equals(estadoReserva)){ 
             this.estadoReserva = "Confirmada";
             quarto.reservar();
         } else {
-            throw new IllegalStateException("Confirmacao da reserva ja foi realizada ou a reserva nao esta mais pendente.");
+            throw new IllegalStateException("Confirmacao da reserva ja foi realizada ou o quarto nao esta disponivel.");
         }
     }
     
@@ -78,10 +78,6 @@ public class Reserva{
     }
     
     public double calculaValorTotal() {
-        if("Confirmada".equals(estadoReserva) || "Ativa".equals(estadoReserva)) {
             return quarto.calcularDiaria() * qtdeDiarias;
-        } else {
-            throw new IllegalStateException("O valor total só pode ser calculado para reservas confirmadas ou ativas.");
-        }
     }
 }
