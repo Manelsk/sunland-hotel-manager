@@ -55,7 +55,6 @@ public abstract class Quarto implements Reservavel {
         if(!"disponivel".equals(status) && !"reservado".equals(status)){
             throw new IllegalArgumentException("Status inválido.");
         }
-        
         this.status = status;
     }
 
