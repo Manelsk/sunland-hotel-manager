@@ -6,6 +6,22 @@ public class Reserva{
     private int qtdeDiarias;
     private String estadoReserva;
 
+    public Reserva(Hospede hospede, Quarto quarto, int qtdeDiarias) {
+        setHospede(hospede);
+        setQuarto(quarto);
+        setQtdeDiarias(qtdeDiarias);
+        this.estadoReserva = "Pendente";
+    }
+
+    public void Confirmareserva() {
+        if("Pendente".equals(estadoReserva)) {
+            this.estadoReserva = "Confirmada";
+            quarto.reservar();
+        } else {
+            throw new IllegalStateException("Confirmacao da reserva ja foi realizada ou a reserva nao esta mais pendente.");
+        }
+    }
+    
     public void setHospede(Hospede hospede) {
         if(hospede == null){
             throw new IllegalArgumentException("Hospede não informado.");
@@ -62,6 +78,10 @@ public class Reserva{
     }
     
     public double calculaValorTotal() {
-        return quarto.calcularDiaria() * qtdeDiarias;
+        if("Confirmada".equals(estadoReserva) || "Ativa".equals(estadoReserva)) {
+            return quarto.calcularDiaria() * qtdeDiarias;
+        } else {
+            throw new IllegalStateException("O valor total só pode ser calculado para reservas confirmadas ou ativas.");
+        }
     }
 }
