@@ -13,7 +13,7 @@ public class Reserva{
         this.estadoReserva = "Pendente";
     }
 
-    public void confirmareserva() {
+    public void confirmaReserva() {
         if(quarto.estaDisponivel() && "Pendente".equals(estadoReserva)){ 
             this.estadoReserva = "Confirmada";
             quarto.reservar();
@@ -63,7 +63,7 @@ public class Reserva{
         if("Confirmada".equals(estadoReserva)){
             estadoReserva = "Ativa";
         } else {
-            throw new IllegalStateException("Reserva não pode ser confirmada.");
+            throw new IllegalStateException("Para realizar o check-in, a reserva deve ser confirmada.");
         }
     }
 
@@ -73,11 +73,11 @@ public class Reserva{
             quarto.liberar();
 
         } else {
-            throw new IllegalStateException("Reserva não pode ser finalizada.");
+            throw new IllegalStateException("Para realizar o check-out, a reserva deve estar ativa.");
         }
     }
     
-    public double calculaValorTotal() {
+    public double calcularValorTotal() {
             return quarto.calcularDiaria() * qtdeDiarias;
     }
 }
