@@ -31,7 +31,32 @@ public class Hotel {
         Reserva reserva = new Reserva(hospede, quarto, qtdeDiarias);
         reservas.add(reserva);
     }
-
     
+    public Quarto buscarQuartoporNumero(int numero) {
+        for(Quarto quarto : quartos){
+            if(quarto.getNumero() == numero){
+                return quarto;
+            }
+        }
+        throw new IllegalArgumentException("Quarto com numero " + numero + " nao encontrado.");
+    }
+
+    public Hospede buscarHospedePorCpf(String cpf) {
+        for(Hospede hospede : hospedes){
+            if(hospede.getCpf().equals(cpf)){
+                return hospede;
+            }
+        }
+        throw new IllegalArgumentException("Hóspede com CPF " + cpf + " nao encontrado.");
+    }
+
+    public Reserva buscarReservaPorCpf(String cpf) {
+        for(Reserva reserva : reservas){
+            if(reserva.getHospede().getCpf().equals(cpf)){
+                return reserva;
+            }
+        }
+        throw new IllegalArgumentException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
+    }
 }
 
