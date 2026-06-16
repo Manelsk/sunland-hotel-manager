@@ -58,5 +58,18 @@ public class Hotel {
         }
         throw new IllegalArgumentException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
     }
+    
+    public ArrayList<Hospede> getHospedes() {
+        return hospedes;
+    }
+
+    public ArrayList<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public ArrayList<Quarto> getQuartos() {
+        return quartos;
+    }   
+
 }
 
