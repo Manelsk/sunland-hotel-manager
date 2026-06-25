@@ -9,6 +9,7 @@ public abstract class Quarto implements Reservavel {
     public Quarto(int numero, double precoBase, int capacidade) {
         setNumero(numero);
         setPrecoBase(precoBase);
+        setCapacidade(capacidade);
         setStatus("disponivel");
     }
 
