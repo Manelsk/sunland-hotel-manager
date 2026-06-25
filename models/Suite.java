@@ -26,7 +26,7 @@ public class Suite extends Quarto{
     public double calcularDiaria() {
         if(PRESIDENCIAL.equals(tipoSuite)) {
             return getPrecoBase() * 2.0;
-        } else if (PRESIDENCIAL.equals(tipoSuite)) {
+        } else if (EXECUTIVA.equals(tipoSuite)) {
             return getPrecoBase() * 1.5;
         } else {
             return getPrecoBase();
