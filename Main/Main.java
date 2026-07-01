@@ -86,7 +86,7 @@ public class Main {
                         System.out.println("\n[ERRO AO CADASTRAR HÓSPEDE!]");
                         System.out.println(e.getMessage());
                         }
-                        
+
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE HÓSPEDES]");

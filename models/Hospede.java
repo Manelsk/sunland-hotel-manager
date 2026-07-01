@@ -55,6 +55,10 @@ public class Hospede {
         this.email = email;
     }
 
+    public String toString() {
+        return "Nome: " + nome + ", CPF: " + cpf + ", Email: " + email;
+    }
+
     public String getEmail(){
         return email;
     }
