@@ -90,7 +90,9 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE HÓSPEDES]");
-                        
+                        hotel.getHospedes().forEach(hospede -> {
+                            System.out.println(hospede.toString());
+                        });
                         break;
                     case 3:
                         System.out.println("\n[ATUALIZAÇÃO DE HÓSPEDE]");
