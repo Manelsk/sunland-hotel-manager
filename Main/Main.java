@@ -45,7 +45,7 @@ public class Main {
         System.out.println("=============================================");
     }
 
-    // --- SUBMENU: HÓSPEDES ---
+   
     private static void exibirMenuHospedes(Scanner scanner, Hotel hotel) {
         int opcao;
         do {
