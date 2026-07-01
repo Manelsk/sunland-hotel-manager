@@ -3,7 +3,7 @@ package models;
 public class Suite extends Quarto{
     
     private String tipoSuite;
-    private static final String PRESIDENCIAL = "Presicencial";
+    private static final String PRESIDENCIAL = "Presidencial";
     private static final String EXECUTIVA = "Executiva";
 
     public String getTipoSuite() {

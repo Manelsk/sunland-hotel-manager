@@ -61,11 +61,23 @@ public class Main {
             
             opcao = lerInteiro(scanner, "Escolha uma opção: ");
 
-            try {
                 switch (opcao) {
                     case 1:
                         System.out.println("\n[CADASTRO DE HÓSPEDE]");
+                       
+                        System.out.print("Digite o nome completo: ");
+                        String nome = scanner.nextLine().trim();
                         
+                        System.out.print("Digite o CPF (apenas números): ");
+                        String cpf = scanner.nextLine().trim();
+                        
+                        System.out.print("Digite o email: ");
+                        String email = scanner.nextLine().trim();
+                        
+                        Hospede hospede1 = new Hospede(nome, cpf, email);
+                        hotel.adicionarHospede(hospede1);
+                        
+                        System.out.println("\n[HÓSPEDE CADASTRADO COM SUCESSO!]");
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE HÓSPEDES]");
@@ -84,12 +96,8 @@ public class Main {
                     default:
                         System.out.println("\n Opção inválida!");
                 }
-            } catch (IllegalArgumentException | IllegalStateException e) {
-                
-                System.out.println("\n[ERRO DE VALIDAÇÃO] " + e.getMessage());
-            }
         } while (opcao != 0);
-    }
+    } 
 
     
     private static void exibirMenuQuartos(Scanner scanner, Hotel hotel) {
@@ -114,7 +122,6 @@ public class Main {
                         System.out.println("1. Simples | 2. Duplo | 3. Suíte");
                         int tipo = lerInteiro(scanner, "Tipo: ");
                         
-                        
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE QUARTOS]");
@@ -136,7 +143,6 @@ public class Main {
         } while (opcao != 0);
     }
 
-    // --- SUBMENU: RESERVAS ---
     private static void exibirMenuReservas(Scanner scanner, Hotel hotel) {
         int opcao;
         do {
@@ -184,28 +190,5 @@ public class Main {
                         System.out.println("\n Opção inválida!");
                 }
         } while (opcao != 0);
-    }
-
-    
-    private static int lerInteiro(Scanner scanner, String mensagem) {
-        while (true) {
-            try {
-                System.out.print(mensagem);
-                return Integer.parseInt(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.println(" Entrada inválida. Digite um número inteiro válido.");
-            }
-        }
-    }
-
-    private static double lerDouble(Scanner scanner, String mensagem) {
-        while (true) {
-            try {
-                System.out.print(mensagem);
-                return Double.parseDouble(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.println(" Entrada inválida. Digite um valor decimal válido.");
-            }
-        }
     }
 }
