@@ -1,5 +1,6 @@
 package models;
 
+import exceptions.DadosInexistentesException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,31 +46,31 @@ public class Hotel {
         reservas.add(reserva);
     }
     
-    public Quarto buscarQuartoporNumero(int numero) {
+    public Quarto buscarQuartoporNumero(int numero) throws DadosInexistentesException {
         for(Quarto quarto : quartos){
             if(quarto.getNumero() == numero){
                 return quarto;
             }
         }
-        throw new IllegalArgumentException("Quarto com numero " + numero + " nao encontrado.");
+        throw new DadosInexistentesException("Quarto com numero " + numero + " nao encontrado.");
     }
 
-    public Hospede buscarHospedePorCpf(String cpf) {
+    public Hospede buscarHospedePorCpf(String cpf) throws DadosInexistentesException {
         for(Hospede hospede : hospedes){
             if(hospede.getCpf().equals(cpf)){
                 return hospede;
             }
         }
-        throw new IllegalArgumentException("Hóspede com CPF " + cpf + " nao encontrado.");
+        throw new DadosInexistentesException("Hóspede com CPF " + cpf + " nao encontrado.");
     }
 
-    public Reserva buscarReservaPorCpf(String cpf) {
+    public Reserva buscarReservaPorCpf(String cpf) throws DadosInexistentesException {
         for(Reserva reserva : reservas){
             if(reserva.getHospede().getCpf().equals(cpf)){
                 return reserva;
             }
         }
-        throw new IllegalArgumentException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
+        throw new DadosInexistentesException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
     }
     
     public List<Hospede> getHospedes() {
