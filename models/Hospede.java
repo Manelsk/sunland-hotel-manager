@@ -1,5 +1,7 @@
 package models;
 
+import exceptions.DadosInvalidosException;
+
 public class Hospede {
     private String nome;
     private String cpf;
