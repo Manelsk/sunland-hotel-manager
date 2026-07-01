@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 import models.*;
+import exceptions.*;
 
 public class Main {
 
@@ -76,10 +77,16 @@ public class Main {
                         System.out.print("Digite o email: ");
                         String email = scanner.nextLine().trim();
                         
+                        try {
                         Hospede hospede1 = new Hospede(nome, cpf, email);
                         hotel.adicionarHospede(hospede1);
-                        
                         System.out.println("\n[HÓSPEDE CADASTRADO COM SUCESSO!]");
+                        
+                        } catch (DadosInvalidosException | DadosNaoInformadosException e) {
+                        System.out.println("\n[ERRO AO CADASTRAR HÓSPEDE!]");
+                        System.out.println(e.getMessage());
+                        }
+                        
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE HÓSPEDES]");
