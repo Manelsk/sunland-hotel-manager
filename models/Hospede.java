@@ -32,23 +32,23 @@ public class Hospede {
         return true;
     }
 
-    public void setNome(String nome) {
+    public void setNome(String nome) throws DadosInvalidosException {
         if(nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nome inválido");
+            throw new DadosInvalidosException("Nome inválido");
         }
         this.nome = nome;
     }
 
-    public void setCpf(String cpf) {
+    public void setCpf(String cpf) throws DadosInvalidosException {
         if(!validaCpf(cpf)){
-            throw new IllegalArgumentException("CPF inválido");
+            throw new DadosInvalidosException("CPF inválido");
         }
         this.cpf = cpf;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws DadosInvalidosException {
         if(!validaEmail(email)){
-            throw new IllegalArgumentException("Email inválido");
+            throw new DadosInvalidosException("Email inválido");
         }
         this.email = email;
     }
