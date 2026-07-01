@@ -1,5 +1,7 @@
 package Main;
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 import models.*;
 
 public class Main {
@@ -190,5 +192,9 @@ public class Main {
                         System.out.println("\n Opção inválida!");
                 }
         } while (opcao != 0);
+    }
+
+    public static int lerInteiro(Scanner scanner, String msg) {
+        
     }
 }
