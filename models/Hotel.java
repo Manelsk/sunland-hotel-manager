@@ -1,6 +1,7 @@
 package models;
 
 import exceptions.DadosInexistentesException;
+import exceptions.DadosNaoInformadosException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public class Hotel {
         this.reservas = new ArrayList<>();
     }
     
-    public void adicionarQuarto(Quarto quarto) {
+    public void adicionarQuarto(Quarto quarto) throws DadosNaoInformadosException, IllegalArgumentException {
         if(quarto == null){
-            throw new IllegalArgumentException("Quarto deve ser informado.");
+            throw new DadosNaoInformadosException("Quarto deve ser informado.");
         }
         
         for(Quarto q : quartos){
@@ -28,19 +29,19 @@ public class Hotel {
             quartos.add(quarto);
     }
 
-    public void adicionarHospede(Hospede hospede) {
+    public void adicionarHospede(Hospede hospede) throws DadosNaoInformadosException {
         if(hospede == null){
-            throw new IllegalArgumentException("Hóspede deve ser informado.");
+            throw new DadosNaoInformadosException("Hóspede deve ser informado.");
         }
         hospedes.add(hospede);
     }
 
-    public void criarReserva(Hospede hospede, Quarto quarto, int qtdeDiarias) {
+    public void criarReserva(Hospede hospede, Quarto quarto, int qtdeDiarias) throws DadosInexistentesException {
         if(hospedes.contains(hospede) == false){
-            throw new IllegalArgumentException("Hóspede informado nao existe.");
+            throw new DadosInexistentesException("Hóspede informado nao existe.");
         }
         if(quartos.contains(quarto) == false){
-            throw new IllegalArgumentException("Quarto informado nao existe.");
+            throw new DadosInexistentesException("Quarto informado nao existe.");
         }
         Reserva reserva = new Reserva(hospede, quarto, qtdeDiarias);
         reservas.add(reserva);
