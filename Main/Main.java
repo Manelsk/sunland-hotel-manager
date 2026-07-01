@@ -90,14 +90,28 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE HÓSPEDES]");
-                        hotel.getHospedes().forEach(hospede -> {
-                            System.out.println(hospede.toString());
-                        });
+                        
+                        if(hotel.getHospedes().isEmpty()) {
+                            System.out.println("Nenhum hóspede cadastrado.");
+                        } else {
+                            hotel.getHospedes().forEach(hospede -> {
+                                System.out.println(hospede.toString());
+                            });
+                        }
+                        
                         break;
                     case 3:
                         System.out.println("\n[ATUALIZAÇÃO DE HÓSPEDE]");
-                        
-                        break;
+                        System.out.print("Digite o CPF do hóspede que deseja atualizar: ");
+                            if(hotel.getHospedes().isEmpty()) {
+                                System.out.println("Nenhum hóspede cadastrado.");
+                                break;
+                            }
+                            
+                            String altCpf = scanner.nextLine().trim();
+                            hotel.buscarHospedePorCpf(altCpf);
+                                
+                            break;
                     case 4:
                         System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
                         
