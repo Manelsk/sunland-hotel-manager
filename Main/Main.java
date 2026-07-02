@@ -1,8 +1,6 @@
 package Main;
 
 import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
 import models.*;
 import exceptions.*;
 
@@ -77,11 +75,11 @@ public class Main {
                     String email = scanner.nextLine().trim();
 
                     try {
-                        Hospede hospede1 = new Hospede(nome, cpf, email);
-                        hotel.adicionarHospede(hospede1);
+                        Hospede hospede = new Hospede(nome, cpf, email);
+                        hotel.adicionarHospede(hospede);
                         System.out.println("\n[HÓSPEDE CADASTRADO COM SUCESSO!]");
 
-                    } catch (DadosInvalidosException | DadosNaoInformadosException e) {
+                    } catch (DadosInvalidosException | DadosNaoInformadosException | DadosInexistentesException | IllegalArgumentException e) {
                         System.out.println("\n[ERRO AO CADASTRAR HÓSPEDE!]");
                         System.out.println(e.getMessage());
                     }
@@ -101,6 +99,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
+                    
                     if (hotel.getHospedes().isEmpty()) {
                         System.out.println("Nenhum hóspede cadastrado.");
                     } else {
@@ -153,7 +152,6 @@ public class Main {
                         System.out.print("Digite o número do quarto: ");
                         int numero = lerInteiro(scanner, "");
                         
-
                         System.out.print("Digite o preço base do quarto: ");
                         double precoBase = lerDouble(scanner);
 
@@ -162,7 +160,6 @@ public class Main {
 
                         System.out.print("O quarto possui ar-condicionado? (true/false): ");
                         boolean possuiArCondicionado = lerBoolean(scanner);
-                        
                         
                         try {
                             QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
@@ -213,8 +210,7 @@ public class Main {
                         int capacidade = lerInteiro(scanner, "");
 
                         System.out.print("Digite o tipo de suíte (Presidencial/Executiva): ");
-                        String tipoSuite = scanner.next();
-                        scanner.nextLine();
+                        String tipoSuite = scanner.next().trim();
 
                         try {
                             Suite Suite = new Suite(numero, precoBase, capacidade, tipoSuite);
@@ -232,7 +228,7 @@ public class Main {
                         System.out.println("Nenhum quarto cadastrado.");
                     } else {
                         hotel.getQuartos().forEach(quarto -> {
-                            System.out.println(quarto.toString());
+                            System.out.println(quarto.exibirDescricao());
                         });
                     }
                     break;
@@ -348,7 +344,5 @@ public class Main {
         } while (!valido);
         return valor;
     }
-
-
 
 }

@@ -11,7 +11,7 @@ public class QuartoDuplo extends Quarto {
     }
 
     public void setTipoCama(String tipoCama){
-        if(!"Casal".equals(getTipoCama())){
+        if(!"Casal".equals(tipoCama) && !"Solteiro".equals(tipoCama)){
             throw new IllegalArgumentException ("Tipo de cama inválido");
         }
         this.tipoCama = tipoCama;
@@ -39,8 +39,11 @@ public class QuartoDuplo extends Quarto {
 
     @Override
     public String exibirDescricao(){
-        return "Quarto Duplo com cama de "+ getTipoCama() 
+        return "======== Quarto Duplo com cama de "+ getTipoCama() + " ========"
         +"\nNúmero "+ getNumero()
-        +"\nPossui varanda? "+ (isPossuiVaranda() ? "Sim" : "Nao");
+        +"\nPossui varanda? "+ (isPossuiVaranda() ? "Sim\n" : "Nao\n")
+        + "Preço da diária: R$ " + calcularDiaria() + "\n"
+        + "Capacidade: " + getCapacidade() + " pessoas\n"
+        + "Disponibilidade: " + (estaDisponivel() ? "Disponível" : "Indisponível") + "\n";
     }
 }

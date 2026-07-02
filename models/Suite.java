@@ -35,7 +35,10 @@ public class Suite extends Quarto{
 
     @Override
 public String exibirDescricao() {
-    return "Suíte " + getTipoSuite() + " número: " + getNumero() +
-           "\nCom capacidade para: " + getCapacidade() + " pessoas.";
+    return "======== Suíte " + getTipoSuite() + "========"
+            + "\nnúmero: " + getNumero() 
+            +"\nCom capacidade para: " + getCapacidade() + " pessoas." 
+            +"\nPreço da diária: R$ " + calcularDiaria()
+            + "\nDisponibilidade: " + (estaDisponivel() ? "Disponível" : "Indisponível") + "\n";
     }
 }
