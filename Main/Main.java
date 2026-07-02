@@ -1,4 +1,5 @@
 package Main;
+
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
@@ -48,7 +49,6 @@ public class Main {
         System.out.println("=============================================");
     }
 
-   
     private static void exibirMenuHospedes(Scanner scanner, Hotel hotel) {
         int opcao;
         do {
@@ -60,70 +60,69 @@ public class Main {
             System.out.println("3. Deletar Hóspede");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.println("---------------------------------------------");
-            
+
             opcao = lerInteiro(scanner, "Escolha uma opção: ");
 
-                switch (opcao) {
-                    case 1:
-                        System.out.println("\n[CADASTRO DE HÓSPEDE]");
-                       
-                        System.out.print("Digite o nome completo: ");
-                        String nome = scanner.nextLine().trim();
-                        
-                        System.out.print("Digite o CPF (apenas números): ");
-                        String cpf = scanner.nextLine().trim();
-                        
-                        System.out.print("Digite o email: ");
-                        String email = scanner.nextLine().trim();
-                        
-                        try {
+            switch (opcao) {
+                case 1:
+                    System.out.println("\n[CADASTRO DE HÓSPEDE]");
+
+                    System.out.print("Digite o nome completo: ");
+                    String nome = scanner.nextLine().trim();
+
+                    System.out.print("Digite o CPF (apenas números): ");
+                    String cpf = scanner.nextLine().trim();
+
+                    System.out.print("Digite o email: ");
+                    String email = scanner.nextLine().trim();
+
+                    try {
                         Hospede hospede1 = new Hospede(nome, cpf, email);
                         hotel.adicionarHospede(hospede1);
                         System.out.println("\n[HÓSPEDE CADASTRADO COM SUCESSO!]");
-                        
-                        } catch (DadosInvalidosException | DadosNaoInformadosException e) {
+
+                    } catch (DadosInvalidosException | DadosNaoInformadosException e) {
                         System.out.println("\n[ERRO AO CADASTRAR HÓSPEDE!]");
                         System.out.println(e.getMessage());
-                        }
+                    }
 
-                        break;
-                    case 2:
-                        System.out.println("\n[LISTAGEM DE HÓSPEDES]");
-                        
-                        if(hotel.getHospedes().isEmpty()) {
-                            System.out.println("Nenhum hóspede cadastrado.");
-                        } else {
-                            hotel.getHospedes().forEach(hospede -> {
-                                System.out.println(hospede.toString());
-                            });
+                    break;
+                case 2:
+                    System.out.println("\n[LISTAGEM DE HÓSPEDES]");
+
+                    if (hotel.getHospedes().isEmpty()) {
+                        System.out.println("Nenhum hóspede cadastrado.");
+                    } else {
+                        hotel.getHospedes().forEach(hospede -> {
+                            System.out.println(hospede.toString());
+                        });
+                    }
+
+                    break;
+                case 3:
+                    System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
+                    if (hotel.getHospedes().isEmpty()) {
+                        System.out.println("Nenhum hóspede cadastrado.");
+                    } else {
+                        System.out.print("Digite o CPF do hóspede a ser deletado: ");
+                        String cpfDeletar = scanner.nextLine().trim();
+                        try {
+                            hotel.excluirHospede(hotel.buscarHospedePorCpf(cpfDeletar));
+                            System.out.println("\n[HÓSPEDE DELETADO COM SUCESSO!]");
+                        } catch (DadosInexistentesException e) {
+                            System.out.println("\n[ERRO AO DELETAR HÓSPEDE!]");
+                            System.out.println(e.getMessage());
                         }
-                        
-                        break;
-                    case 3:
-                        System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
-                        if(hotel.getHospedes().isEmpty()) {
-                            System.out.println("Nenhum hóspede cadastrado.");
-                        } else {
-                            System.out.print("Digite o CPF do hóspede a ser deletado: ");
-                            String cpfDeletar = scanner.nextLine().trim();
-                            try {
-                                hotel.excluirHospede(hotel.buscarHospedePorCpf(cpfDeletar));
-                                System.out.println("\n[HÓSPEDE DELETADO COM SUCESSO!]");
-                            } catch (DadosInexistentesException e) {
-                                System.out.println("\n[ERRO AO DELETAR HÓSPEDE!]");
-                                System.out.println(e.getMessage());
-                            }
-                        }
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        System.out.println("\n Opção inválida!");
-                }
+                    }
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("\n Opção inválida!");
+            }
         } while (opcao != 0);
-    } 
+    }
 
-    
     private static void exibirMenuQuartos(Scanner scanner, Hotel hotel) {
         int opcao;
         do {
@@ -136,64 +135,73 @@ public class Main {
             System.out.println("4. Deletar Quarto");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.println("---------------------------------------------");
-            
+
             opcao = lerInteiro(scanner, "Escolha uma opção: ");
 
-                switch (opcao) {
-                    case 1:
-                        System.out.println("\n[CADASTRO DE QUARTO]");
-                        System.out.println("Selecione o tipo de quarto:");
-                        System.out.println("1. Simples | 2. Duplo | 3. Suíte");
-                        int tipo = lerInteiro(scanner, "Tipo: ");
-                        if (tipo < 1 || tipo > 3) {
-                            System.out.println("Tipo de quarto inválido. Cadastro cancelado.");
-                            break;
+            switch (opcao) {
+                case 1:
+                    System.out.println("\n[CADASTRO DE QUARTO]");
+                    System.out.println("Selecione o tipo de quarto:");
+                    System.out.println("1. Simples | 2. Duplo | 3. Suíte");
+                    int tipo = lerInteiro(scanner, "Tipo: ");
+                    if (tipo < 1 || tipo > 3) {
+                        System.out.println("Tipo de quarto inválido. Cadastro cancelado.");
+                        break;
+                    }
+                    if (tipo == 1) {
+                        System.out.println("Tipo de quarto selecionado: Simples");
+
+                        System.out.print("Digite o número do quarto: ");
+                        int numero = lerInteiro(scanner, "Número: ");
+
+                        System.out.print("Digite o preço base do quarto: ");
+                        double precoBase = scanner.nextDouble();
+
+                        System.out.print("Digite a capacidade do quarto: ");
+                        int capacidade = lerInteiro(scanner, "Capacidade: ");
+
+                        System.out.print("O quarto possui ar-condicionado? (true/false): ");
+                        boolean possuiArCondicionado = scanner.nextBoolean();
+
+                        try {
+                            QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade,
+                                    possuiArCondicionado);
+                            hotel.adicionarQuarto(quartoSimples);
+                            System.out.println("\n[QUARTO SIMPLES CADASTRADO COM SUCESSO!]");
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException e) {
+                            System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
+                            System.out.println(e.getMessage());
                         }
-                        if(tipo==1){
-                            System.out.println("Tipo de quarto selecionado: Simples");
-                            
-                            System.out.print("Digite o número do quarto: ");
-                            int numero = lerInteiro(scanner, "Número: ");
-                            
-                            System.out.print("Digite o preço base do quarto: ");
-                            double precoBase = scanner.nextDouble();
-                           
-                            System.out.print("Digite a capacidade do quarto: ");
-                            int capacidade = lerInteiro(scanner, "Capacidade: ");
-                            
-                            System.out.print("O quarto possui ar-condicionado? (true/false): ");
-                            boolean possuiArCondicionado = scanner.nextBoolean();
-                            
-                        
-                        } else if(tipo==2){
-                            System.out.println("Tipo de quarto selecionado: Duplo");
-                        } else {
-                            System.out.println("Tipo de quarto selecionado: Suíte");
-                        }
-                        break;
-                    case 2:
-                        System.out.println("\n[LISTAGEM DE QUARTOS]");
-                        if(hotel.getQuartos().isEmpty()) {
-                            System.out.println("Nenhum quarto cadastrado.");
-                        } else {
-                            hotel.getQuartos().forEach(quarto -> {
-                                System.out.println(quarto.toString());
-                            });
-                        }
-                        break;
-                    case 3:
-                        System.out.println("\n[ATUALIZAÇÃO DE QUARTO]");
-                        
-                        break;
-                    case 4:
-                        System.out.println("\n[EXCLUSÃO DE QUARTO]");
-                        
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        System.out.println("\n Opção inválida!");
-                }
+
+                    } else if (tipo == 2) {
+                        System.out.println("Tipo de quarto selecionado: Duplo");
+                    } else {
+                        System.out.println("Tipo de quarto selecionado: Suíte");
+                    }
+                    break;
+                case 2:
+                    System.out.println("\n[LISTAGEM DE QUARTOS]");
+                    if (hotel.getQuartos().isEmpty()) {
+                        System.out.println("Nenhum quarto cadastrado.");
+                    } else {
+                        hotel.getQuartos().forEach(quarto -> {
+                            System.out.println(quarto.toString());
+                        });
+                    }
+                    break;
+                case 3:
+                    System.out.println("\n[ATUALIZAÇÃO DE QUARTO]");
+
+                    break;
+                case 4:
+                    System.out.println("\n[EXCLUSÃO DE QUARTO]");
+
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("\n Opção inválida!");
+            }
         } while (opcao != 0);
     }
 
@@ -211,44 +219,44 @@ public class Main {
             System.out.println("6. Cancelar/Deletar Reserva");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.println("---------------------------------------------");
-            
+
             opcao = lerInteiro(scanner, "Escolha uma opção: ");
 
-                switch (opcao) {
-                    case 1:
-                        System.out.println("\n[CRIAÇÃO DE RESERVA]");
-                        
-                        break;
-                    case 2:
-                        System.out.println("\n[LISTAGEM DE RESERVAS]");
-                        if(hotel.getReservas().isEmpty()) {
-                            System.out.println("Nenhuma reserva cadastrada.");
-                        } else {
-                            hotel.getReservas().forEach(reserva -> {
-                                System.out.println(reserva.toString());
-                            });
-                        }
-                        break;
-                    case 3:
-                        System.out.println("\n[CONFIRMAÇÃO DE RESERVA]");
-                        
-                        break;
-                    case 4:
-                        System.out.println("\n[CHECK-IN]");
-                        
-                        break;
-                    case 5:
-                        System.out.println("\n[CHECK-OUT]");
-                        
-                    case 6:
-                        System.out.println("\n[CANCELAMENTO DE RESERVA]");
-                        
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        System.out.println("\n Opção inválida!");
-                }
+            switch (opcao) {
+                case 1:
+                    System.out.println("\n[CRIAÇÃO DE RESERVA]");
+
+                    break;
+                case 2:
+                    System.out.println("\n[LISTAGEM DE RESERVAS]");
+                    if (hotel.getReservas().isEmpty()) {
+                        System.out.println("Nenhuma reserva cadastrada.");
+                    } else {
+                        hotel.getReservas().forEach(reserva -> {
+                            System.out.println(reserva.toString());
+                        });
+                    }
+                    break;
+                case 3:
+                    System.out.println("\n[CONFIRMAÇÃO DE RESERVA]");
+
+                    break;
+                case 4:
+                    System.out.println("\n[CHECK-IN]");
+
+                    break;
+                case 5:
+                    System.out.println("\n[CHECK-OUT]");
+
+                case 6:
+                    System.out.println("\n[CANCELAMENTO DE RESERVA]");
+
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("\n Opção inválida!");
+            }
         } while (opcao != 0);
     }
 
