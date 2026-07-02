@@ -145,7 +145,31 @@ public class Main {
                         System.out.println("Selecione o tipo de quarto:");
                         System.out.println("1. Simples | 2. Duplo | 3. Suíte");
                         int tipo = lerInteiro(scanner, "Tipo: ");
+                        if (tipo < 1 || tipo > 3) {
+                            System.out.println("Tipo de quarto inválido. Cadastro cancelado.");
+                            break;
+                        }
+                        if(tipo==1){
+                            System.out.println("Tipo de quarto selecionado: Simples");
+                            
+                            System.out.print("Digite o número do quarto: ");
+                            int numero = lerInteiro(scanner, "Número: ");
+                            
+                            System.out.print("Digite o preço base do quarto: ");
+                            double precoBase = scanner.nextDouble();
+                           
+                            System.out.print("Digite a capacidade do quarto: ");
+                            int capacidade = lerInteiro(scanner, "Capacidade: ");
+                            
+                            System.out.print("O quarto possui ar-condicionado? (true/false): ");
+                            boolean possuiArCondicionado = scanner.nextBoolean();
+                            
                         
+                        } else if(tipo==2){
+                            System.out.println("Tipo de quarto selecionado: Duplo");
+                        } else {
+                            System.out.println("Tipo de quarto selecionado: Suíte");
+                        }
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE QUARTOS]");
