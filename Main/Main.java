@@ -131,8 +131,7 @@ public class Main {
             System.out.println("---------------------------------------------");
             System.out.println("1. Cadastrar Quarto");
             System.out.println("2. Listar Quartos");
-            System.out.println("3. Atualizar Quarto");
-            System.out.println("4. Deletar Quarto");
+            System.out.println("3. Deletar Quarto");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.println("---------------------------------------------");
 
@@ -175,6 +174,30 @@ public class Main {
 
                     } else if (tipo == 2) {
                         System.out.println("Tipo de quarto selecionado: Duplo");
+                        
+                        System.out.print("Digite o número do quarto: ");
+                        int numero = lerInteiro(scanner, "Número: ");
+
+                        System.out.print("Digite o preço base do quarto: ");
+                        double precoBase = scanner.nextDouble();
+
+                        System.out.print("Digite a capacidade do quarto: ");
+                        int capacidade = lerInteiro(scanner, "Capacidade: ");
+
+                        System.out.print("Digite o tipo de cama (Casal): ");
+                        String tipoCama = scanner.next();
+
+                        System.out.print("O quarto possui varanda? (true/false): ");
+                        boolean possuiVaranda = scanner.nextBoolean();
+
+                        try {
+                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
+                            hotel.adicionarQuarto(quartoDuplo);
+                            System.out.println("\n[QUARTO DUPLO CADASTRADO COM SUCESSO!]");
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException e) {
+                            System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
+                            System.out.println(e.getMessage());
+                        }
                     } else {
                         System.out.println("Tipo de quarto selecionado: Suíte");
                     }
@@ -190,10 +213,6 @@ public class Main {
                     }
                     break;
                 case 3:
-                    System.out.println("\n[ATUALIZAÇÃO DE QUARTO]");
-
-                    break;
-                case 4:
                     System.out.println("\n[EXCLUSÃO DE QUARTO]");
 
                     break;
