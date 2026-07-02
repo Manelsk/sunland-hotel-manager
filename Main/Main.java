@@ -352,6 +352,14 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("\n[CHECK-IN]");
+                        if(hotel.getReservas().isEmpty()){
+                            System.out.println("Nenhuma reserva cadastrada. Não é possível realizar check-in.");
+                            break;
+                        }
+                    
+                        System.out.print("Digite o CPF do hóspede para realizar o check-in: ");
+                        String cpfCheckIn = scanner.nextLine().trim(); 
+                        
 
                     break;
                 case 5:
