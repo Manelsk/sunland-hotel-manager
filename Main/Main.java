@@ -359,7 +359,15 @@ public class Main {
                     
                         System.out.print("Digite o CPF do hóspede para realizar o check-in: ");
                         String cpfCheckIn = scanner.nextLine().trim(); 
-                        
+                        try {
+                            Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckIn);
+                            System.out.println("\n[RESERVA ENCONTRADA!]");
+                            reserva.realizarCheckIn();
+                        } catch (DadosInexistentesException | IllegalStateException e) {
+                            System.out.println("\n[ERRO AO REALIZAR CHECK-IN!]");
+                            System.out.println(e.getMessage());
+                        }
+                        System.out.println("\n[CHECK-IN REALIZADO COM SUCESSO!]");
 
                     break;
                 case 5:
