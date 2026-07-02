@@ -57,7 +57,7 @@ public class Main {
             System.out.println("---------------------------------------------");
             System.out.println("1. Cadastrar Hóspede");
             System.out.println("2. Listar Hóspedes");
-            System.out.println(". Deletar Hóspede");
+            System.out.println("3. Deletar Hóspede");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.println("---------------------------------------------");
             
@@ -149,7 +149,13 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE QUARTOS]");
-                        
+                        if(hotel.getQuartos().isEmpty()) {
+                            System.out.println("Nenhum quarto cadastrado.");
+                        } else {
+                            hotel.getQuartos().forEach(quarto -> {
+                                System.out.println(quarto.toString());
+                            });
+                        }
                         break;
                     case 3:
                         System.out.println("\n[ATUALIZAÇÃO DE QUARTO]");
