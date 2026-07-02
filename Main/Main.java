@@ -283,11 +283,9 @@ public class Main {
                         String cpfHospede = scanner.nextLine().trim();
                         Hospede hospede = hotel.buscarHospedePorCpf(cpfHospede);
 
-                        System.out.print("Digite o número do quarto: ");
                         int numeroQuarto = lerInteiro(scanner, "Digite o número do quarto: ");
                         Quarto quarto = hotel.buscarQuartoporNumero(numeroQuarto);
 
-                        System.out.print("Digite a quantidade de diárias: ");
                         int qtdeDiarias = lerInteiro(scanner, "Digite a quantidade de diárias: ");
 
                         hotel.criarReserva(hospede, quarto, qtdeDiarias);
@@ -451,5 +449,4 @@ public class Main {
 
         return resultado;
     }
-
 }
