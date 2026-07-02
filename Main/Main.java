@@ -151,13 +151,13 @@ public class Main {
                         System.out.println("Tipo de quarto selecionado: Simples");
 
                         System.out.print("Digite o número do quarto: ");
-                        int numero = lerInteiro(scanner, "Número: ");
+                        int numero = lerInteiro(scanner, "");
 
                         System.out.print("Digite o preço base do quarto: ");
                         double precoBase = scanner.nextDouble();
 
                         System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "Capacidade: ");
+                        int capacidade = lerInteiro(scanner, "2");
 
                         System.out.print("O quarto possui ar-condicionado? (true/false): ");
                         boolean possuiArCondicionado = scanner.nextBoolean();
@@ -176,13 +176,13 @@ public class Main {
                         System.out.println("Tipo de quarto selecionado: Duplo");
                         
                         System.out.print("Digite o número do quarto: ");
-                        int numero = lerInteiro(scanner, "Número: ");
+                        int numero = lerInteiro(scanner, "");
 
                         System.out.print("Digite o preço base do quarto: ");
                         double precoBase = scanner.nextDouble();
 
                         System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "Capacidade: ");
+                        int capacidade = lerInteiro(scanner, "");
 
                         System.out.print("Digite o tipo de cama (Casal): ");
                         String tipoCama = scanner.next();
@@ -204,13 +204,13 @@ public class Main {
                         System.out.println("Tipo de quarto selecionado: Suíte");
                         
                         System.out.print("Digite o número do quarto: ");
-                        int numero = lerInteiro(scanner, "Número: ");
+                        int numero = lerInteiro(scanner, "");
 
                         System.out.print("Digite o preço base do quarto: ");
                         double precoBase = scanner.nextDouble();
 
                         System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "Capacidade: ");
+                        int capacidade = lerInteiro(scanner, "");
 
                         System.out.print("Digite o tipo de suíte (Presidencial/Executiva): ");
                         String tipoSuite = scanner.next();
@@ -304,7 +304,7 @@ public class Main {
     }
 
     public static int lerInteiro(Scanner scanner, String msg) {
-        int valor = 1;
+        int valor = -1;
         boolean valido = false;
         do {
             System.out.print(msg);
@@ -318,4 +318,37 @@ public class Main {
         } while (!valido);
         return valor;
     }
+    
+    public static double lerDouble(Scanner scanner) {
+        double valor = -1;
+        boolean valido = false;
+        do {
+            if (scanner.hasNextDouble()) {
+                valor = scanner.nextDouble();
+                valido = true;
+            } else {
+                System.out.println("Entrada inválida! Por favor, digite um número decimal.");
+            }
+            scanner.nextLine();
+        } while (!valido);
+        return valor;
+    }
+    
+    public static boolean lerBoolean(Scanner scanner) {
+        boolean valor = false;
+        boolean valido = false;
+        do {
+            if (scanner.hasNextBoolean()) {
+                valor = scanner.nextBoolean();
+                valido = true;
+            } else {
+                System.out.println("Entrada inválida! Por favor, digite 'true' ou 'false'.");
+            }
+            scanner.nextLine();
+        } while (!valido);
+        return valor;
+    }
+
+
+
 }
