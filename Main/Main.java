@@ -283,7 +283,10 @@ public class Main {
             switch (opcao) {
                 case 1:
                     System.out.println("\n[CRIAÇÃO DE RESERVA]");
-
+                        if(hotel.getHospedes().isEmpty()){
+                            System.out.println("Nenhum hóspede cadastrado. Não é possível criar reserva.");
+                            break;
+                        }
                     break;
                 case 2:
                     System.out.println("\n[LISTAGEM DE RESERVAS]");
