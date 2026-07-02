@@ -154,14 +154,14 @@ public class Main {
                         int numero = lerInteiro(scanner, "");
 
                         System.out.print("Digite o preço base do quarto: ");
-                        double precoBase = scanner.nextDouble();
+                        double precoBase = lerDouble(scanner);
 
                         System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "2");
+                        int capacidade = lerInteiro(scanner, "");
 
                         System.out.print("O quarto possui ar-condicionado? (true/false): ");
-                        boolean possuiArCondicionado = scanner.nextBoolean();
-                        scanner.nextLine(); // Limpar o buffer do scanner
+                        boolean possuiArCondicionado = lerBoolean(scanner);
+                        
                         
                         try {
                             QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
@@ -179,18 +179,17 @@ public class Main {
                         int numero = lerInteiro(scanner, "");
 
                         System.out.print("Digite o preço base do quarto: ");
-                        double precoBase = scanner.nextDouble();
+                        double precoBase = lerDouble(scanner);
 
                         System.out.print("Digite a capacidade do quarto: ");
                         int capacidade = lerInteiro(scanner, "");
 
-                        System.out.print("Digite o tipo de cama (Casal): ");
+                        System.out.print("Digite o tipo de cama (Casal ou Solteiro): ");
                         String tipoCama = scanner.next();
-                        scanner.nextLine();
                         
                         System.out.print("O quarto possui varanda? (true/false): ");
-                        boolean possuiVaranda = scanner.nextBoolean();
-                        scanner.nextLine(); 
+                        boolean possuiVaranda = lerBoolean(scanner);
+                        
                         
                         try {
                             QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
@@ -207,7 +206,7 @@ public class Main {
                         int numero = lerInteiro(scanner, "");
 
                         System.out.print("Digite o preço base do quarto: ");
-                        double precoBase = scanner.nextDouble();
+                        double precoBase = lerDouble(scanner);
 
                         System.out.print("Digite a capacidade do quarto: ");
                         int capacidade = lerInteiro(scanner, "");
