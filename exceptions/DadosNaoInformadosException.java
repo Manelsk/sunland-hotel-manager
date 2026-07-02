@@ -1,6 +1,6 @@
 package exceptions;
 
-public class DadosNaoInformadosException extends IllegalArgumentException {
+public class DadosNaoInformadosException extends RuntimeException {
     public DadosNaoInformadosException(String message) {
         super(message);
     }

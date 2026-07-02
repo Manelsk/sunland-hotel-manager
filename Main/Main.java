@@ -152,6 +152,7 @@ public class Main {
 
                         System.out.print("Digite o número do quarto: ");
                         int numero = lerInteiro(scanner, "");
+                        
 
                         System.out.print("Digite o preço base do quarto: ");
                         double precoBase = lerDouble(scanner);
@@ -167,7 +168,7 @@ public class Main {
                             QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
                             hotel.adicionarQuarto(quartoSimples);
                             System.out.println("\n[QUARTO SIMPLES CADASTRADO COM SUCESSO!]");
-                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException e) {
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
                             System.out.println(e.getMessage());
                         }
@@ -195,7 +196,7 @@ public class Main {
                             QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
                             hotel.adicionarQuarto(quartoDuplo);
                             System.out.println("\n[QUARTO DUPLO CADASTRADO COM SUCESSO!]");
-                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException e) {
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
                             System.out.println(e.getMessage());
                         }
@@ -219,7 +220,7 @@ public class Main {
                             Suite Suite = new Suite(numero, precoBase, capacidade, tipoSuite);
                             hotel.adicionarQuarto(Suite);
                             System.out.println("\n[QUARTO SUÍTE CADASTRADO COM SUCESSO!]");
-                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException e) {
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
                             System.out.println(e.getMessage());
                         }
