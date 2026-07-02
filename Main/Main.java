@@ -283,30 +283,30 @@ public class Main {
             switch (opcao) {
                 case 1:
                     System.out.println("\n[CRIAÇÃO DE RESERVA]");
-                        if(hotel.getHospedes().isEmpty()){
-                            System.out.println("Nenhum hóspede cadastrado. Não é possível criar reserva.");
-                            break;
-                        }
-                        if(hotel.getQuartos().isEmpty()){
-                            System.out.println("Nenhum quarto cadastrado. Não é possível criar reserva.");
-                            break;
-                        }
-                       
+                    if (hotel.getHospedes().isEmpty()) {
+                        System.out.println("Nenhum hóspede cadastrado. Não é possível criar reserva.");
+                        break;
+                    }
+                    if (hotel.getQuartos().isEmpty()) {
+                        System.out.println("Nenhum quarto cadastrado. Não é possível criar reserva.");
+                        break;
+                    }
+
                     try {
                         System.out.print("Digite o CPF do hóspede: ");
                         String cpfHospede = scanner.nextLine().trim();
                         Hospede hospede = hotel.buscarHospedePorCpf(cpfHospede);
-                        
+
                         System.out.print("Digite o número do quarto: ");
                         int numeroQuarto = lerInteiro(scanner, "");
                         Quarto quarto = hotel.buscarQuartoporNumero(numeroQuarto);
 
                         System.out.print("Digite a quantidade de diárias: ");
-                        int qtdeDiarias = lerInteiro(scanner, "");  
+                        int qtdeDiarias = lerInteiro(scanner, "");
 
                         hotel.criarReserva(hospede, quarto, qtdeDiarias);
                         System.out.println("\n[RESERVA CRIADA COM SUCESSO!]");
-                    
+
                     } catch (DadosInexistentesException | IllegalArgumentException e) {
                         System.out.println("\n[ERRO AO CRIAR RESERVA!]");
                         System.out.println(e.getMessage());
@@ -324,21 +324,21 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n[CONFIRMAÇÃO DE RESERVA]");
-                        if(hotel.getReservas().isEmpty()){
-                            System.out.println("Nenhuma reserva cadastrada. Não é possível confirmar reserva.");
-                            break;
-                        }
-                    
+                    if (hotel.getReservas().isEmpty()) {
+                        System.out.println("Nenhuma reserva cadastrada. Não é possível confirmar reserva.");
+                        break;
+                    }
+
                     System.out.print("Digite o CPF do hóspede para confirmar a reserva: ");
-                        String cpfConfirmar = scanner.nextLine().trim();
-                   
+                    String cpfConfirmar = scanner.nextLine().trim();
+
                     try {
                         Reserva reserva = hotel.buscarReservaPorCpf(cpfConfirmar);
                         System.out.println("\n[RESERVA ENCONTRADA!]");
                         System.out.println(reserva.exibirDescricao());
                         System.out.print("Deseja confirmar esta reserva? (S/N): ");
                         boolean confirmar = lerBoolean(scanner);
-                        if(!confirmar){
+                        if (!confirmar) {
                             System.out.println("\n[RESERVA CANCELADA PELO USUÁRIO!]");
                             break;
                         }
@@ -352,46 +352,57 @@ public class Main {
                     break;
                 case 4:
                     System.out.println("\n[CHECK-IN]");
-                        if(hotel.getReservas().isEmpty()){
-                            System.out.println("Nenhuma reserva cadastrada. Não é possível realizar check-in.");
-                            break;
-                        }
-                    
-                        System.out.print("Digite o CPF do hóspede para realizar o check-in: ");
-                        String cpfCheckIn = scanner.nextLine().trim(); 
-                        try {
-                            Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckIn);
-                            System.out.println("\n[RESERVA ENCONTRADA!]");
-                            reserva.realizarCheckIn();
-                        } catch (DadosInexistentesException | IllegalStateException e) {
-                            System.out.println("\n[ERRO AO REALIZAR CHECK-IN!]");
-                            System.out.println(e.getMessage());
-                        }
-                        System.out.println("\n[CHECK-IN REALIZADO COM SUCESSO!]");
+                    if (hotel.getReservas().isEmpty()) {
+                        System.out.println("Nenhuma reserva cadastrada. Não é possível realizar check-in.");
+                        break;
+                    }
+
+                    System.out.print("Digite o CPF do hóspede para realizar o check-in: ");
+                    String cpfCheckIn = scanner.nextLine().trim();
+                    try {
+                        Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckIn);
+                        System.out.println("\n[RESERVA ENCONTRADA!]");
+                        reserva.realizarCheckIn();
+                    } catch (DadosInexistentesException | IllegalStateException e) {
+                        System.out.println("\n[ERRO AO REALIZAR CHECK-IN!]");
+                        System.out.println(e.getMessage());
+                    }
+                    System.out.println("\n[CHECK-IN REALIZADO COM SUCESSO!]");
 
                     break;
                 case 5:
                     System.out.println("\n[CHECK-OUT]");
-                        if(hotel.getReservas().isEmpty()){
-                            System.out.println("Nenhuma reserva cadastrada. Não é possível realizar check-out.");
-                            break;
-                        }
-                    
-                        System.out.print("Digite o CPF do hóspede para realizar o check-out: ");
-                        String cpfCheckOut = scanner.nextLine().trim(); 
-                        try {
-                            Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckOut);
-                            System.out.println("\n[RESERVA ENCONTRADA!]");
-                            reserva.realizarCheckOut();
-                        } catch (DadosInexistentesException | IllegalStateException e) {
-                            System.out.println("\n[ERRO AO REALIZAR CHECK-OUT!]");
-                            System.out.println(e.getMessage());
-                        }
-                        System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
+                    if (hotel.getReservas().isEmpty()) {
+                        System.out.println("Nenhuma reserva cadastrada. Não é possível realizar check-out.");
+                        break;
+                    }
+
+                    System.out.print("Digite o CPF do hóspede para realizar o check-out: ");
+                    String cpfCheckOut = scanner.nextLine().trim();
+                    try {
+                        Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckOut);
+                        System.out.println("\n[RESERVA ENCONTRADA!]");
+                        reserva.realizarCheckOut();
+                    } catch (DadosInexistentesException | IllegalStateException e) {
+                        System.out.println("\n[ERRO AO REALIZAR CHECK-OUT!]");
+                        System.out.println(e.getMessage());
+                    }
+                    System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
 
                 case 6:
                     System.out.println("\n[EXCLUSÃO DE RESERVA]");
+                    System.out.print("Digite o CPF do hóspede para deletar a reserva: ");
+                    String cpfDeletarReserva = scanner.nextLine().trim();
 
+                    try {
+                        Reserva reserva = hotel.buscarReservaPorCpf(cpfDeletarReserva);
+                        System.out.println("\n[RESERVA ENCONTRADA!]");
+                        hotel.excluirReserva(reserva);
+                        System.out.println("\n[RESERVA DELETADA COM SUCESSO!]");
+                    } catch (DadosInexistentesException | IllegalStateException e) {
+                        System.out.println("\n[ERRO AO DELETAR RESERVA!]");
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 0:
                     break;
@@ -433,25 +444,25 @@ public class Main {
     }
 
     public static boolean lerBoolean(Scanner scanner) {
-    String entrada;
-    boolean valido = false;
-    boolean resultado = false;
+        String entrada;
+        boolean valido = false;
+        boolean resultado = false;
 
-    do {
-        entrada = scanner.nextLine().trim().toUpperCase();
+        do {
+            entrada = scanner.nextLine().trim().toUpperCase();
 
-        if (entrada.equals("S")) {
-            resultado = true;
-            valido = true;
-        } else if (entrada.equals("N")) {
-            resultado = false;
-            valido = true;
-        } else {
-            System.out.println("Entrada inválida! Por favor, digite [S] ou [N]");
-        }
-    } while (!valido);
+            if (entrada.equals("S")) {
+                resultado = true;
+                valido = true;
+            } else if (entrada.equals("N")) {
+                resultado = false;
+                valido = true;
+            } else {
+                System.out.println("Entrada inválida! Por favor, digite [S] ou [N]");
+            }
+        } while (!valido);
 
-    return resultado;
-}
+        return resultado;
+    }
 
 }
