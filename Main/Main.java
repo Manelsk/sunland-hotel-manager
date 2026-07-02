@@ -163,8 +163,7 @@ public class Main {
                         boolean possuiArCondicionado = lerBoolean(scanner);
 
                         try {
-                            QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade,
-                                    possuiArCondicionado);
+                            QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
                             hotel.adicionarQuarto(quartoSimples);
                             System.out.println("\n[QUARTO SIMPLES CADASTRADO COM SUCESSO!]");
                         } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
@@ -186,14 +185,13 @@ public class Main {
                         int capacidade = lerInteiro(scanner, "");
 
                         System.out.print("Digite o tipo de cama (Casal ou Solteiro): ");
-                        String tipoCama = scanner.next();
+                        String tipoCama = scanner.nextLine().trim();
 
                         System.out.print("O quarto possui varanda? (S/N): ");
                         boolean possuiVaranda = lerBoolean(scanner);
 
                         try {
-                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama,
-                                    possuiVaranda);
+                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
                             hotel.adicionarQuarto(quartoDuplo);
                             System.out.println("\n[QUARTO DUPLO CADASTRADO COM SUCESSO!]");
                         } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
@@ -388,7 +386,7 @@ public class Main {
                         System.out.println(e.getMessage());
                     }
                     System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
-
+                    break;
                 case 6:
                     System.out.println("\n[EXCLUSÃO DE RESERVA]");
                     System.out.print("Digite o CPF do hóspede para deletar a reserva: ");
