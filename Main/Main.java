@@ -79,7 +79,8 @@ public class Main {
                         hotel.adicionarHospede(hospede);
                         System.out.println("\n[HÓSPEDE CADASTRADO COM SUCESSO!]");
 
-                    } catch (DadosInvalidosException | DadosNaoInformadosException | DadosInexistentesException | IllegalArgumentException e) {
+                    } catch (DadosInvalidosException | DadosNaoInformadosException | DadosInexistentesException
+                            | IllegalArgumentException e) {
                         System.out.println("\n[ERRO AO CADASTRAR HÓSPEDE!]");
                         System.out.println(e.getMessage());
                     }
@@ -99,7 +100,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
-                    
+
                     if (hotel.getHospedes().isEmpty()) {
                         System.out.println("Nenhum hóspede cadastrado.");
                     } else {
@@ -108,7 +109,7 @@ public class Main {
                         try {
                             hotel.excluirHospede(hotel.buscarHospedePorCpf(cpfDeletar));
                             System.out.println("\n[HÓSPEDE DELETADO COM SUCESSO!]");
-                        } catch (DadosInexistentesException e) {
+                        } catch (DadosInexistentesException | IllegalStateException | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO DELETAR HÓSPEDE!]");
                             System.out.println(e.getMessage());
                         }
@@ -151,7 +152,7 @@ public class Main {
 
                         System.out.print("Digite o número do quarto: ");
                         int numero = lerInteiro(scanner, "");
-                        
+
                         System.out.print("Digite o preço base do quarto: ");
                         double precoBase = lerDouble(scanner);
 
@@ -160,19 +161,21 @@ public class Main {
 
                         System.out.print("O quarto possui ar-condicionado? (true/false): ");
                         boolean possuiArCondicionado = lerBoolean(scanner);
-                        
+
                         try {
-                            QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
+                            QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade,
+                                    possuiArCondicionado);
                             hotel.adicionarQuarto(quartoSimples);
                             System.out.println("\n[QUARTO SIMPLES CADASTRADO COM SUCESSO!]");
-                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException | IllegalArgumentException e) {
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
+                                | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
                             System.out.println(e.getMessage());
                         }
 
                     } else if (tipo == 2) {
                         System.out.println("Tipo de quarto selecionado: Duplo");
-                        
+
                         System.out.print("Digite o número do quarto: ");
                         int numero = lerInteiro(scanner, "");
 
@@ -184,22 +187,23 @@ public class Main {
 
                         System.out.print("Digite o tipo de cama (Casal ou Solteiro): ");
                         String tipoCama = scanner.next();
-                        
+
                         System.out.print("O quarto possui varanda? (true/false): ");
                         boolean possuiVaranda = lerBoolean(scanner);
-                        
-                        
+
                         try {
-                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
+                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama,
+                                    possuiVaranda);
                             hotel.adicionarQuarto(quartoDuplo);
                             System.out.println("\n[QUARTO DUPLO CADASTRADO COM SUCESSO!]");
-                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException | IllegalArgumentException e) {
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
+                                | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
                             System.out.println(e.getMessage());
                         }
                     } else {
                         System.out.println("Tipo de quarto selecionado: Suíte");
-                        
+
                         System.out.print("Digite o número do quarto: ");
                         int numero = lerInteiro(scanner, "");
 
@@ -216,7 +220,8 @@ public class Main {
                             Suite Suite = new Suite(numero, precoBase, capacidade, tipoSuite);
                             hotel.adicionarQuarto(Suite);
                             System.out.println("\n[QUARTO SUÍTE CADASTRADO COM SUCESSO!]");
-                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException | IllegalArgumentException e) {
+                        } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
+                                | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO CADASTRAR QUARTO!]");
                             System.out.println(e.getMessage());
                         }
@@ -234,7 +239,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n[EXCLUSÃO DE QUARTO]");
-                    
+
                     if (hotel.getQuartos().isEmpty()) {
                         System.out.println("Nenhum quarto cadastrado.");
                     } else {
@@ -248,7 +253,7 @@ public class Main {
                             System.out.println(e.getMessage());
                         }
                     }
-                    
+
                     break;
                 case 0:
                     break;
@@ -328,7 +333,7 @@ public class Main {
         } while (!valido);
         return valor;
     }
-    
+
     public static double lerDouble(Scanner scanner) {
         double valor = -1;
         boolean valido = false;
@@ -343,7 +348,7 @@ public class Main {
         } while (!valido);
         return valor;
     }
-    
+
     public static boolean lerBoolean(Scanner scanner) {
         boolean valor = false;
         boolean valido = false;
