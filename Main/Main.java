@@ -287,6 +287,30 @@ public class Main {
                             System.out.println("Nenhum hóspede cadastrado. Não é possível criar reserva.");
                             break;
                         }
+                        if(hotel.getQuartos().isEmpty()){
+                            System.out.println("Nenhum quarto cadastrado. Não é possível criar reserva.");
+                            break;
+                        }
+                       
+                    try {
+                        System.out.print("Digite o CPF do hóspede: ");
+                        String cpfHospede = scanner.nextLine().trim();
+                        Hospede hospede = hotel.buscarHospedePorCpf(cpfHospede);
+                        
+                        System.out.print("Digite o número do quarto: ");
+                        int numeroQuarto = lerInteiro(scanner, "");
+                        Quarto quarto = hotel.buscarQuartoporNumero(numeroQuarto);
+
+                        System.out.print("Digite a quantidade de diárias: ");
+                        int qtdeDiarias = lerInteiro(scanner, "");  
+
+                        hotel.criarReserva(hospede, quarto, qtdeDiarias);
+                        System.out.println("\n[RESERVA CRIADA COM SUCESSO!]");
+                    
+                    } catch (DadosInexistentesException | IllegalArgumentException e) {
+                        System.out.println("\n[ERRO AO CRIAR RESERVA!]");
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 2:
                     System.out.println("\n[LISTAGEM DE RESERVAS]");

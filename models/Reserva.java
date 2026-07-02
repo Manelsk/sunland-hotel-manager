@@ -14,7 +14,7 @@ public class Reserva{
     }
 
     public void confirmaReserva() {
-        if(quarto.estaDisponivel() && "Pendente".equals(estadoReserva)){ 
+        if("Pendente".equals(estadoReserva)){ 
             this.estadoReserva = "Confirmada";
             quarto.reservar();
         } else {
@@ -30,8 +30,8 @@ public class Reserva{
     }
 
     public void setQuarto(Quarto quarto) {
-        if(quarto == null){
-            throw new IllegalArgumentException("Quarto não informado.");
+        if(quarto == null || quarto.estaDisponivel() == false){
+            throw new IllegalArgumentException("Quarto não informado ou não disponível.");
         }
         this.quarto = quarto;
     }
