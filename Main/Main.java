@@ -150,17 +150,13 @@ public class Main {
                     if (tipo == 1) {
                         System.out.println("Tipo de quarto selecionado: Simples");
 
-                        System.out.print("Digite o número do quarto: ");
-                        int numero = lerInteiro(scanner, "");
+                        int numero = lerInteiro(scanner, "Digite o número do quarto: ");
 
-                        System.out.print("Digite o preço base do quarto: ");
-                        double precoBase = lerDouble(scanner);
+                        double precoBase = lerDouble(scanner, "Digite o preço base do quarto: ");
+                        
+                        int capacidade = lerInteiro(scanner, "Digite a capacidade do quarto: ");
 
-                        System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "");
-
-                        System.out.print("O quarto possui ar-condicionado? (S/N): ");
-                        boolean possuiArCondicionado = lerBoolean(scanner);
+                        boolean possuiArCondicionado = lerBoolean(scanner, "O quarto possui ar-condicionado? (S/N): ");
 
                         try {
                             QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
@@ -175,20 +171,16 @@ public class Main {
                     } else if (tipo == 2) {
                         System.out.println("Tipo de quarto selecionado: Duplo");
 
-                        System.out.print("Digite o número do quarto: ");
-                        int numero = lerInteiro(scanner, "");
+                        int numero = lerInteiro(scanner, "Digite o número do quarto: ");
 
-                        System.out.print("Digite o preço base do quarto: ");
-                        double precoBase = lerDouble(scanner);
+                        double precoBase = lerDouble(scanner, "Digite o preço base do quarto: ");
 
-                        System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "");
+                        int capacidade = lerInteiro(scanner, "Digite a capacidade do quarto: ");
 
                         System.out.print("Digite o tipo de cama (Casal ou Solteiro): ");
                         String tipoCama = scanner.nextLine().trim();
 
-                        System.out.print("O quarto possui varanda? (S/N): ");
-                        boolean possuiVaranda = lerBoolean(scanner);
+                        boolean possuiVaranda = lerBoolean(scanner, "O quarto possui varanda? (S/N): ");
 
                         try {
                             QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
@@ -202,17 +194,14 @@ public class Main {
                     } else {
                         System.out.println("Tipo de quarto selecionado: Suíte");
 
-                        System.out.print("Digite o número do quarto: ");
-                        int numero = lerInteiro(scanner, "");
+                        int numero = lerInteiro(scanner, "Digite o número do quarto: ");
 
-                        System.out.print("Digite o preço base do quarto: ");
-                        double precoBase = lerDouble(scanner);
+                        double precoBase = lerDouble(scanner, "Digite o preço base do quarto: ");
 
-                        System.out.print("Digite a capacidade do quarto: ");
-                        int capacidade = lerInteiro(scanner, "");
+                        int capacidade = lerInteiro(scanner, "Digite a capacidade do quarto: ");
 
                         System.out.print("Digite o tipo de suíte (Presidencial/Executiva): ");
-                        String tipoSuite = scanner.next().trim();
+                        String tipoSuite = scanner.nextLine().trim();
 
                         try {
                             Suite Suite = new Suite(numero, precoBase, capacidade, tipoSuite);
@@ -241,8 +230,7 @@ public class Main {
                     if (hotel.getQuartos().isEmpty()) {
                         System.out.println("Nenhum quarto cadastrado.");
                     } else {
-                        System.out.print("Digite o número do quarto a ser deletado: ");
-                        int numeroDeletar = lerInteiro(scanner, "");
+                        int numeroDeletar = lerInteiro(scanner, "Digite o número do quarto a ser deletado: ");
                         try {
                             hotel.excluirQuarto(hotel.buscarQuartoporNumero(numeroDeletar));
                             System.out.println("\n[QUARTO DELETADO COM SUCESSO!]");
@@ -296,11 +284,11 @@ public class Main {
                         Hospede hospede = hotel.buscarHospedePorCpf(cpfHospede);
 
                         System.out.print("Digite o número do quarto: ");
-                        int numeroQuarto = lerInteiro(scanner, "");
+                        int numeroQuarto = lerInteiro(scanner, "Digite o número do quarto: ");
                         Quarto quarto = hotel.buscarQuartoporNumero(numeroQuarto);
 
                         System.out.print("Digite a quantidade de diárias: ");
-                        int qtdeDiarias = lerInteiro(scanner, "");
+                        int qtdeDiarias = lerInteiro(scanner, "Digite a quantidade de diárias: ");
 
                         hotel.criarReserva(hospede, quarto, qtdeDiarias);
                         System.out.println("\n[RESERVA CRIADA COM SUCESSO!]");
@@ -334,8 +322,7 @@ public class Main {
                         Reserva reserva = hotel.buscarReservaPorCpf(cpfConfirmar);
                         System.out.println("\n[RESERVA ENCONTRADA!]");
                         System.out.println(reserva.exibirDescricao());
-                        System.out.print("Deseja confirmar esta reserva? (S/N): ");
-                        boolean confirmar = lerBoolean(scanner);
+                        boolean confirmar = lerBoolean(scanner, "Deseja confirmar esta reserva? (S/N): ");
                         if (!confirmar) {
                             System.out.println("\n[RESERVA CANCELADA PELO USUÁRIO!]");
                             break;
@@ -426,10 +413,11 @@ public class Main {
         return valor;
     }
 
-    public static double lerDouble(Scanner scanner) {
+    public static double lerDouble(Scanner scanner, String msg) {
         double valor = -1;
         boolean valido = false;
         do {
+            System.out.print(msg);
             if (scanner.hasNextDouble()) {
                 valor = scanner.nextDouble();
                 valido = true;
@@ -441,14 +429,15 @@ public class Main {
         return valor;
     }
 
-    public static boolean lerBoolean(Scanner scanner) {
+    public static boolean lerBoolean(Scanner scanner, String msg) {
         String entrada;
         boolean valido = false;
         boolean resultado = false;
 
         do {
             entrada = scanner.nextLine().trim().toUpperCase();
-
+            System.out.print(msg);
+            
             if (entrada.equals("S")) {
                 resultado = true;
                 valido = true;
