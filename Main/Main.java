@@ -197,7 +197,13 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("\n[LISTAGEM DE RESERVAS]");
-                        
+                        if(hotel.getReservas().isEmpty()) {
+                            System.out.println("Nenhuma reserva cadastrada.");
+                        } else {
+                            hotel.getReservas().forEach(reserva -> {
+                                System.out.println(reserva.toString());
+                            });
+                        }
                         break;
                     case 3:
                         System.out.println("\n[CONFIRMAÇÃO DE RESERVA]");
