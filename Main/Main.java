@@ -101,7 +101,19 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
-                        
+                        if(hotel.getHospedes().isEmpty()) {
+                            System.out.println("Nenhum hóspede cadastrado.");
+                        } else {
+                            System.out.print("Digite o CPF do hóspede a ser deletado: ");
+                            String cpfDeletar = scanner.nextLine().trim();
+                            try {
+                                hotel.excluirHospede(hotel.buscarHospedePorCpf(cpfDeletar));
+                                System.out.println("\n[HÓSPEDE DELETADO COM SUCESSO!]");
+                            } catch (DadosInexistentesException e) {
+                                System.out.println("\n[ERRO AO DELETAR HÓSPEDE!]");
+                                System.out.println(e.getMessage());
+                            }
+                        }
                         break;
                     case 0:
                         break;
