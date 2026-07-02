@@ -81,6 +81,21 @@ public class Hotel {
         hospedes.remove(hospede);
     }
     
+    public void excluirReserva(Reserva reserva) throws DadosInexistentesException {
+        if(reservas.contains(reserva) == false){
+            throw new DadosInexistentesException("Reserva informada nao existe.");
+        }
+        reservas.remove(reserva);
+    }
+
+    public void excluirQuarto(Quarto quarto) throws DadosInexistentesException {
+        if(quartos.contains(quarto) == false){
+            throw new DadosInexistentesException("Quarto informado nao existe.");
+        }
+        quartos.remove(quarto);
+    }
+
+    
     public List<Hospede> getHospedes() {
         return hospedes;
     }
