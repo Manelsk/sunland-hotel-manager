@@ -229,6 +229,18 @@ public class Main {
     }
 
     public static int lerInteiro(Scanner scanner, String msg) {
-        
+        int valor = 1;
+        boolean valido = false;
+        do {
+            System.out.print(msg);
+            if (scanner.hasNextInt()) {
+                valor = scanner.nextInt();
+                valido = true;
+            } else {
+                System.out.println("Entrada inválida! Por favor, digite um número inteiro.");
+            }
+            scanner.nextLine();
+        } while (!valido);
+        return valor;
     }
 }
