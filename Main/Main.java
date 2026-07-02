@@ -57,8 +57,7 @@ public class Main {
             System.out.println("---------------------------------------------");
             System.out.println("1. Cadastrar Hóspede");
             System.out.println("2. Listar Hóspedes");
-            System.out.println("3. Atualizar Hóspede");
-            System.out.println("4. Deletar Hóspede");
+            System.out.println(". Deletar Hóspede");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.println("---------------------------------------------");
             
@@ -101,18 +100,6 @@ public class Main {
                         
                         break;
                     case 3:
-                        System.out.println("\n[ATUALIZAÇÃO DE HÓSPEDE]");
-                        System.out.print("Digite o CPF do hóspede que deseja atualizar: ");
-                            if(hotel.getHospedes().isEmpty()) {
-                                System.out.println("Nenhum hóspede cadastrado.");
-                                break;
-                            }
-                            
-                            String altCpf = scanner.nextLine().trim();
-                            hotel.buscarHospedePorCpf(altCpf);
-                                
-                            break;
-                    case 4:
                         System.out.println("\n[EXCLUSÃO DE HÓSPEDE]");
                         
                         break;
