@@ -159,7 +159,7 @@ public class Main {
                         System.out.print("Digite a capacidade do quarto: ");
                         int capacidade = lerInteiro(scanner, "");
 
-                        System.out.print("O quarto possui ar-condicionado? (true/false): ");
+                        System.out.print("O quarto possui ar-condicionado? (S/N): ");
                         boolean possuiArCondicionado = lerBoolean(scanner);
 
                         try {
@@ -188,7 +188,7 @@ public class Main {
                         System.out.print("Digite o tipo de cama (Casal ou Solteiro): ");
                         String tipoCama = scanner.next();
 
-                        System.out.print("O quarto possui varanda? (true/false): ");
+                        System.out.print("O quarto possui varanda? (S/N): ");
                         boolean possuiVaranda = lerBoolean(scanner);
 
                         try {
@@ -324,6 +324,30 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n[CONFIRMAÇÃO DE RESERVA]");
+                        if(hotel.getReservas().isEmpty()){
+                            System.out.println("Nenhuma reserva cadastrada. Não é possível confirmar reserva.");
+                            break;
+                        }
+                    
+                    System.out.print("Digite o CPF do hóspede para confirmar a reserva: ");
+                        String cpfConfirmar = scanner.nextLine().trim();
+                   
+                    try {
+                        Reserva reserva = hotel.buscarReservaPorCpf(cpfConfirmar);
+                        System.out.println("\n[RESERVA ENCONTRADA!]");
+                        System.out.println(reserva.exibirDescricao());
+                        System.out.print("Deseja confirmar esta reserva? (S/N): ");
+                        boolean confirmar = lerBoolean(scanner);
+                        if(!confirmar){
+                            System.out.println("\n[RESERVA CANCELADA PELO USUÁRIO!]");
+                            break;
+                        }
+                        reserva.confirmaReserva();
+                        System.out.println("\n[RESERVA CONFIRMADA COM SUCESSO!]");
+                    } catch (DadosInexistentesException | IllegalStateException e) {
+                        System.out.println("\n[ERRO AO CONFIRMAR RESERVA!]");
+                        System.out.println(e.getMessage());
+                    }
 
                     break;
                 case 4:
@@ -334,7 +358,7 @@ public class Main {
                     System.out.println("\n[CHECK-OUT]");
 
                 case 6:
-                    System.out.println("\n[CANCELAMENTO DE RESERVA]");
+                    System.out.println("\n[EXCLUSÃO DE RESERVA]");
 
                     break;
                 case 0:
@@ -377,18 +401,25 @@ public class Main {
     }
 
     public static boolean lerBoolean(Scanner scanner) {
-        boolean valor = false;
-        boolean valido = false;
-        do {
-            if (scanner.hasNextBoolean()) {
-                valor = scanner.nextBoolean();
-                valido = true;
-            } else {
-                System.out.println("Entrada inválida! Por favor, digite 'true' ou 'false'.");
-            }
-            scanner.nextLine();
-        } while (!valido);
-        return valor;
-    }
+    String entrada;
+    boolean valido = false;
+    boolean resultado = false;
+
+    do {
+        entrada = scanner.nextLine().trim().toUpperCase();
+
+        if (entrada.equals("S")) {
+            resultado = true;
+            valido = true;
+        } else if (entrada.equals("N")) {
+            resultado = false;
+            valido = true;
+        } else {
+            System.out.println("Entrada inválida! Por favor, digite [S] ou [N]");
+        }
+    } while (!valido);
+
+    return resultado;
+}
 
 }

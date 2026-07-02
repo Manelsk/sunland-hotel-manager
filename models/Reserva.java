@@ -80,4 +80,12 @@ public class Reserva{
     public double calcularValorTotal() {
             return quarto.calcularDiaria() * qtdeDiarias;
     }
+
+    public String exibirDescricao() {
+        return "Reserva do hóspede: " + hospede.getNome() + "\n"
+                + "Quarto número: " + quarto.getNumero() + "\n"
+                + "Quantidade de diárias: " + qtdeDiarias + "\n"
+                + "Estado da reserva: " + estadoReserva + "\n"
+                + "Valor total: R$ " + calcularValorTotal() + "\n";
+    }
 }
