@@ -73,6 +73,13 @@ public class Hotel {
         }
         throw new DadosInexistentesException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
     }
+
+    public void excluirHospede(Hospede hospede) throws DadosInexistentesException {
+        if(hospedes.contains(hospede) == false){
+            throw new DadosInexistentesException("Hóspede informado nao existe.");
+        }
+        hospedes.remove(hospede);
+    }
     
     public List<Hospede> getHospedes() {
         return hospedes;
