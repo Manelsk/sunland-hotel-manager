@@ -40,10 +40,10 @@ public class QuartoDuplo extends Quarto {
     @Override
     public String exibirDescricao(){
         return "======== Quarto Duplo com cama de "+ getTipoCama() + " ========"
-        +"\nNúmero "+ getNumero()
+        +"\nNúmero: "+ getNumero()
         +"\nPossui varanda? "+ (isPossuiVaranda() ? "Sim\n" : "Nao\n")
         + "Preço da diária: R$ " + calcularDiaria() + "\n"
-        + "Capacidade: " + getCapacidade() + " pessoas\n"
+        + "Capacidade: " + getCapacidade() + " pessoas.\n"
         + "Disponibilidade: " + (estaDisponivel() ? "Disponível" : "Indisponível") + "\n";
     }
 }

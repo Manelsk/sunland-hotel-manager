@@ -234,7 +234,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n[EXCLUSÃO DE QUARTO]");
-
+                    
                     break;
                 case 0:
                     break;
