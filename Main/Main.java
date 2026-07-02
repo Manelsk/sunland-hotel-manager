@@ -346,12 +346,12 @@ public class Main {
                         Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckIn);
                         System.out.println("\n[RESERVA ENCONTRADA!]");
                         reserva.realizarCheckIn();
+                        System.out.println("\n[CHECK-IN REALIZADO COM SUCESSO!]");
                     } catch (DadosInexistentesException | IllegalStateException e) {
                         System.out.println("\n[ERRO AO REALIZAR CHECK-IN!]");
                         System.out.println(e.getMessage());
                     }
-                    System.out.println("\n[CHECK-IN REALIZADO COM SUCESSO!]");
-
+                    
                     break;
                 case 5:
                     System.out.println("\n[CHECK-OUT]");
@@ -366,11 +366,12 @@ public class Main {
                         Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckOut);
                         System.out.println("\n[RESERVA ENCONTRADA!]");
                         reserva.realizarCheckOut();
+                        System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
                     } catch (DadosInexistentesException | IllegalStateException e) {
                         System.out.println("\n[ERRO AO REALIZAR CHECK-OUT!]");
                         System.out.println(e.getMessage());
                     }
-                    System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
+                    
                     break;
                 case 6:
                     System.out.println("\n[EXCLUSÃO DE RESERVA]");
@@ -433,8 +434,8 @@ public class Main {
         boolean resultado = false;
 
         do {
-            entrada = scanner.nextLine().trim().toUpperCase();
             System.out.print(msg);
+            entrada = scanner.nextLine().trim().toUpperCase();
 
             if (entrada.equals("S")) {
                 resultado = true;
