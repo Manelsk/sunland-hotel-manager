@@ -27,7 +27,8 @@ public class QuartoSimples extends Quarto {
 
     @Override
     public String exibirDescricao(){
-        return "======== Quarto Simples número: " + getNumero() + "========"
+        return "======== Quarto Simples ========"
+        +"\n Numero" + getNumero() 
         + "\nCapacidade: " + getCapacidade() + " pessoas." 
         + "\nAr condicionado: " + (possuiArCondicionado ? "Sim\n" : "Não\n")
         + "Preço da diária: R$ " + calcularDiaria() + "\n"
