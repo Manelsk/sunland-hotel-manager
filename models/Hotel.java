@@ -78,24 +78,35 @@ public class Hotel {
         if(hospedes.contains(hospede) == false){
             throw new DadosInexistentesException("Hóspede informado nao existe.");
         }
+        for (Reserva reserva : reservas) {
+        if (reserva.getHospede().equals(hospede)) {
+            throw new IllegalStateException("Hóspede informado não pode ser excluído pois possui reservas.");
+            }
+        }
         hospedes.remove(hospede);
     }
     
     public void excluirReserva(Reserva reserva) throws DadosInexistentesException {
         if(reservas.contains(reserva) == false){
             throw new DadosInexistentesException("Reserva informada nao existe.");
+        }else if("Confirmada".equals(reserva.getEstadoReserva())){
+            throw new IllegalStateException("Reserva informada nao pode ser excluida pois ja foi confirmada.");
         }
+        
         reservas.remove(reserva);
     }
 
     public void excluirQuarto(Quarto quarto) throws DadosInexistentesException {
         if(quartos.contains(quarto) == false){
             throw new DadosInexistentesException("Quarto informado nao existe.");
+        }else if(quarto.estaDisponivel() == false){
+            throw new IllegalStateException("Quarto informado nao pode ser excluido pois esta reservado.");
         }
+        
         quartos.remove(quarto);
     }
 
-    
+
     public List<Hospede> getHospedes() {
         return hospedes;
     }

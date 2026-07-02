@@ -235,6 +235,20 @@ public class Main {
                 case 3:
                     System.out.println("\n[EXCLUSÃO DE QUARTO]");
                     
+                    if (hotel.getQuartos().isEmpty()) {
+                        System.out.println("Nenhum quarto cadastrado.");
+                    } else {
+                        System.out.print("Digite o número do quarto a ser deletado: ");
+                        int numeroDeletar = lerInteiro(scanner, "");
+                        try {
+                            hotel.excluirQuarto(hotel.buscarQuartoporNumero(numeroDeletar));
+                            System.out.println("\n[QUARTO DELETADO COM SUCESSO!]");
+                        } catch (DadosInexistentesException | IllegalStateException | IllegalArgumentException e) {
+                            System.out.println("\n[ERRO AO DELETAR QUARTO!]");
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    
                     break;
                 case 0:
                     break;
