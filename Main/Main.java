@@ -372,6 +372,22 @@ public class Main {
                     break;
                 case 5:
                     System.out.println("\n[CHECK-OUT]");
+                        if(hotel.getReservas().isEmpty()){
+                            System.out.println("Nenhuma reserva cadastrada. Não é possível realizar check-out.");
+                            break;
+                        }
+                    
+                        System.out.print("Digite o CPF do hóspede para realizar o check-out: ");
+                        String cpfCheckOut = scanner.nextLine().trim(); 
+                        try {
+                            Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckOut);
+                            System.out.println("\n[RESERVA ENCONTRADA!]");
+                            reserva.realizarCheckOut();
+                        } catch (DadosInexistentesException | IllegalStateException e) {
+                            System.out.println("\n[ERRO AO REALIZAR CHECK-OUT!]");
+                            System.out.println(e.getMessage());
+                        }
+                        System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
 
                 case 6:
                     System.out.println("\n[EXCLUSÃO DE RESERVA]");
