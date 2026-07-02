@@ -153,7 +153,7 @@ public class Main {
                         int numero = lerInteiro(scanner, "Digite o número do quarto: ");
 
                         double precoBase = lerDouble(scanner, "Digite o preço base do quarto: ");
-                        
+
                         int capacidade = lerInteiro(scanner, "Digite a capacidade do quarto: ");
 
                         boolean possuiArCondicionado = lerBoolean(scanner, "O quarto possui ar-condicionado? (S/N): ");
@@ -437,7 +437,7 @@ public class Main {
         do {
             entrada = scanner.nextLine().trim().toUpperCase();
             System.out.print(msg);
-            
+
             if (entrada.equals("S")) {
                 resultado = true;
                 valido = true;
