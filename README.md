@@ -1,5 +1,7 @@
 
+Sunland Hotel Manager
 
+Sistema de gerenciamento de hotel desenvolvido em Java utilizando Programação Orientada a Objetos.
 
 
 
