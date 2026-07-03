@@ -17,7 +17,13 @@ Execute:
 java -cp bin Main.Main
 ```
 
-Projeto desenvolvido para fins academicos por Emanuel Victor Barros Bezerra.
+A documentação completa está disponível na pasta `docs/`.
+
+Após clonar o projeto, basta abrir:
+```text
+docs/index.html
+```
+para acessar a documentação gerada pelo Javadoc.
 
 Conceitos de POO utilizados
 
@@ -30,6 +36,7 @@ Conceitos de POO utilizados
 - Tratamento de exceções
 - Coleções (`ArrayList`)
 
+Projeto desenvolvido para fins academicos por Emanuel Victor Barros Bezerra.
 
 
 
