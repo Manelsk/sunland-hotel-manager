@@ -9,7 +9,7 @@ Como executar:
 Compile o projeto:
 
 ```bash
-javac -d bin src\models\*.java src\exceptions\*.java src\exceptions\*.java src\Main\Main.java 
+javac -d bin src\models\*.java src\exceptions\*.java src\interfaces\*.java src\Main\Main.java 
 ```
 Execute:
 
