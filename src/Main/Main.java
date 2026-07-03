@@ -302,7 +302,7 @@ public class Main {
                         System.out.println("Nenhuma reserva cadastrada.");
                     } else {
                         hotel.getReservas().forEach(reserva -> {
-                            System.out.println(reserva.toString());
+                            System.out.println(reserva.exibirDescricao());
                         });
                     }
                     break;
