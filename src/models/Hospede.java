@@ -80,7 +80,7 @@ public class Hospede {
      * @throws DadosInvalidosException se o nome for null ou vazio
      */
     public void setNome(String nome) throws DadosInvalidosException {
-        if(nome == null || nome.trim().isEmpty()) {
+        if(nome == null || nome.trim().isEmpty() || nome.length() < 3 || nome.length() > 100 ){
             throw new DadosInvalidosException("Nome inválido");
         }
         this.nome = nome;
