@@ -1,4 +1,5 @@
 package models;
+import interfaces.Reservavel;
 
 /**
  * Representa um quarto do hotel com funcionalidades de reserva.

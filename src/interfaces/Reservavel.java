@@ -1,4 +1,4 @@
-package models;
+package interfaces;
 
 /**
  * Interface que define o contrato para objetos que podem ser reservados.
