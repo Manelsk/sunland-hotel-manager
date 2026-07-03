@@ -4,17 +4,37 @@ Sunland Hotel Manager
 Sistema de gerenciamento de hotel desenvolvido em Java utilizando Programação Orientada a Objetos.
 
 
+Como executar:
+
+Compile o projeto:
+
+```bash
+javac -d bin src\models\*.java src\exceptions\*.java src\Main\Main.java
+```
+Execute:
+
+```bash
+java -cp bin Main.Main
+```
+
+Projeto desenvolvido para fins academicos por Emanuel Victor Barros Bezerra.
+
+Conceitos de POO utilizados
+
+- Encapsulamento
+- Herança
+- Polimorfismo
+- Abstração
+- Interfaces
+- Classes abstratas
+- Tratamento de exceções
+- Coleções (`ArrayList`)
 
 
 
 
 
-
-
-
-
-
-
+Diagrama de Classes pode ser visualizado atraves do PNG ou usando o codigo do PlantUml
 
 
 <img width="2922" height="1372" alt="Diagrama de Classes SHM-POO" src="https://github.com/user-attachments/assets/1592ab76-af3e-436b-9266-2a420d14c881" />
