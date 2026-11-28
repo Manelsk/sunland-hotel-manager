@@ -1,152 +1,177 @@
 package com.sunland.hotel.models;
 
 import com.sunland.hotel.exceptions.DadosInvalidosException;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Representa um hóspede do hotel.
- * 
- * A classe Hospede encapsula informações pessoais de um hóspede,
- * incluindo nome, CPF e email, com validação robusta de dados.
+ *
+ * A classe {@code Hospede} encapsula identificador único, nome, CPF normalizado
+ * (com validação de dígitos verificadores) e e-mail válido.
  */
 public class Hospede {
-    /** Nome do hóspede */
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    private static final Pattern REPEATED_DIGITS_PATTERN = Pattern.compile("^(\\d)\\1{10}$");
+
+    private final UUID id;
     private String nome;
-    
-    /** CPF (Cadastro de Pessoas Físicas) do hóspede */
     private String cpf;
-    
-    /** Email do hóspede */
-    private String email;    
+    private String email;
+
     /**
-     * Constrói um novo Hóspede com os dados fornecidos.
-     * 
-     * @param nome o nome do hóspede
-     * @param cpf o CPF do hóspede (pode conter formatação)
-     * @param email o email do hóspede
-     * @throws DadosInvalidosException se o nome, CPF ou email forem inválidos
+     * Constrói um novo hóspede validando e normalizando seus dados.
+     *
+     * @param nome nome completo do hóspede (3 a 100 caracteres)
+     * @param cpf CPF válido com ou sem máscara
+     * @param email endereço de e-mail válido
+     * @throws DadosInvalidosException se nome, CPF ou email forem inválidos
      */
-    public Hospede(String nome, String cpf, String email){
+    public Hospede(String nome, String cpf, String email) {
+        this.id = UUID.randomUUID();
         setNome(nome);
         setCpf(cpf);
         setEmail(email);
     }
 
     /**
-     * Valida se o CPF fornecido é válido.
-     * 
-     * O CPF é considerado válido se:
-     * - Não for null ou vazio
-     * - Contiver exatamente 11 dígitos (após remoção de formatação)
-     * 
-     * @param cpf o CPF a ser validado (aceita formatação com pontos e hífens)
-     * @return true se o CPF é válido; false caso contrário
+     * Remove caracteres não numéricos de um CPF.
+     *
+     * @param cpf CPF com ou sem formatação
+     * @return string contendo apenas os dígitos, ou string vazia se {@code cpf} for null
      */
-    public static boolean validaCpf(String cpf){
-        if(cpf == null || cpf.trim().isEmpty()) {
+    public static String normalizarCpf(String cpf) {
+        if (cpf == null) {
+            return "";
+        }
+        return cpf.replaceAll("\\D", "");
+    }
+
+    /**
+     * Valida o CPF considerando exatamente 11 dígitos, rejeitando sequências repetidas
+     * e verificando os dois dígitos verificadores oficiais (módulo 11).
+     *
+     * @param cpf CPF a ser validado (aceita pontuação)
+     * @return {@code true} se válido; {@code false} caso contrário
+     */
+    public static boolean validaCpf(String cpf) {
+        if (cpf == null || cpf.trim().isEmpty()) {
             return false;
         }
 
-        cpf = cpf.replaceAll("\\D", "");
-
-        if(!cpf.matches("\\d{11}")){
+        String digitos = normalizarCpf(cpf);
+        if (!digitos.matches("\\d{11}") || REPEATED_DIGITS_PATTERN.matcher(digitos).matches()) {
             return false;
         }
-        
-        return true;
-    }
-    
-    /**
-     * Valida se o email fornecido é válido.
-     * 
-     * O email é considerado válido se:
-     * - Não for null ou vazio
-     * - Contiver o caractere '@'
-     * - Não começar ou terminar com '@'
-     * 
-     * @param email o email a ser validado
-     * @return true se o email é válido; false caso contrário
-     */
-    public static boolean validaEmail(String email){
-        if(email == null || !email.contains("@") || email.trim().isEmpty() || email.startsWith("@") || email.endsWith("@")){
+
+        int primeiroDigito = calcularDigitoVerificador(digitos, 9, 10);
+        if (primeiroDigito != Character.getNumericValue(digitos.charAt(9))) {
             return false;
         }
-        return true;
+
+        int segundoDigito = calcularDigitoVerificador(digitos, 10, 11);
+        return segundoDigito == Character.getNumericValue(digitos.charAt(10));
     }
 
-    /**
-     * Define o nome do hóspede.
-     * 
-     * @param nome o nome a ser atribuído
-     * @throws DadosInvalidosException se o nome for null ou vazio
-     */
-    public void setNome(String nome) throws DadosInvalidosException {
-        if(nome == null || nome.trim().isEmpty() || nome.length() < 3 || nome.length() > 100 ){
-            throw new DadosInvalidosException("Nome inválido");
+    private static int calcularDigitoVerificador(String digitos, int tamanhoBase, int pesoInicial) {
+        int soma = 0;
+        for (int i = 0; i < tamanhoBase; i++) {
+            int num = Character.getNumericValue(digitos.charAt(i));
+            soma += num * (pesoInicial - i);
         }
-        this.nome = nome;
+        int resto = (soma * 10) % 11;
+        return (resto == 10) ? 0 : resto;
     }
 
     /**
-     * Define o CPF do hóspede.
-     * 
-     * @param cpf o CPF a ser atribuído (aceita formatação com pontos e hífens)
-     * @throws DadosInvalidosException se o CPF for inválido
-     * @see #validaCpf(String)
+     * Valida se o e-mail atende ao formato padrão {@code usuario@dominio.tld}.
+     *
+     * @param email endereço de e-mail a validar
+     * @return {@code true} se válido; {@code false} caso contrário
      */
-    public void setCpf(String cpf) throws DadosInvalidosException {
-        if(!validaCpf(cpf)){
-            throw new DadosInvalidosException("CPF inválido");
+    public static boolean validaEmail(String email) {
+        if (email == null) {
+            return false;
         }
-        this.cpf = cpf;
+        String normalizado = email.trim();
+        return !normalizado.isEmpty() && EMAIL_PATTERN.matcher(normalizado).matches();
     }
 
-    /**
-     * Define o email do hóspede.
-     * 
-     * @param email o email a ser atribuído
-     * @throws DadosInvalidosException se o email for inválido
-     * @see #validaEmail(String)
-     */
-    public void setEmail(String email) throws DadosInvalidosException {
-        if(!validaEmail(email)){
-            throw new DadosInvalidosException("Email inválido");
-        }
-        this.email = email;
+    public UUID getId() {
+        return id;
     }
 
-    /**
-     * Retorna uma representação em string das informações do hóspede.
-     * 
-     * @return uma string contendo nome, CPF e email do hóspede
-     */
-    public String toString() {
-        return "Nome: " + nome + ", CPF: " + cpf + ", Email: " + email;
-    }
-
-    /**
-     * Obtém o email do hóspede.
-     * 
-     * @return o email do hóspede
-     */
-    public String getEmail(){
-        return email;
-    }
-
-    /**
-     * Obtém o nome do hóspede.
-     * 
-     * @return o nome do hóspede
-     */
-    public String getNome(){
+    public String getNome() {
         return nome;
     }
 
+    public void setNome(String nome) {
+        if (nome == null) {
+            throw new DadosInvalidosException("Nome inválido.");
+        }
+        String normalizado = nome.trim();
+        if (normalizado.length() < 3 || normalizado.length() > 100) {
+            throw new DadosInvalidosException("Nome inválido: deve ter entre 3 e 100 caracteres.");
+        }
+        this.nome = normalizado;
+    }
+
     /**
-     * Obtém o CPF do hóspede.
-     * 
-     * @return o CPF do hóspede
+     * Retorna o CPF normalizado (somente os 11 dígitos).
      */
-    public String getCpf(){
+    public String getCpf() {
         return cpf;
+    }
+
+    /**
+     * Retorna o CPF formatado no padrão {@code XXX.XXX.XXX-XX}.
+     */
+    public String getCpfFormatado() {
+        return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "."
+                + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
+    }
+
+    public void setCpf(String cpf) {
+        if (!validaCpf(cpf)) {
+            throw new DadosInvalidosException("CPF inválido.");
+        }
+        this.cpf = normalizarCpf(cpf);
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        if (!validaEmail(email)) {
+            throw new DadosInvalidosException("Email inválido.");
+        }
+        this.email = email.trim().toLowerCase();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Hospede other)) {
+            return false;
+        }
+        return Objects.equals(cpf, other.cpf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cpf);
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id.toString().substring(0, 8).toUpperCase()
+                + " | Nome: " + nome
+                + " | CPF: " + getCpfFormatado()
+                + " | Email: " + email;
     }
 }
