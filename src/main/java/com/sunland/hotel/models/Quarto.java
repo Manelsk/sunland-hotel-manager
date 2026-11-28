@@ -1,183 +1,156 @@
 package com.sunland.hotel.models;
+
+import com.sunland.hotel.enums.StatusQuarto;
+import com.sunland.hotel.exceptions.DadosInvalidosException;
+import com.sunland.hotel.exceptions.DadosNaoInformadosException;
 import com.sunland.hotel.interfaces.Reservavel;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
- * Representa um quarto do hotel com funcionalidades de reserva.
- * 
- * A classe abstrata Quarto define a estrutura base para diferentes tipos de quartos,
- * incluindo gerenciamento de status de disponibilidade, preço e capacidade.
- * Subclasses devem implementar o cálculo específico de diária e descrição.
+ * Classe base abstrata que representa um quarto do hotel.
  */
 public abstract class Quarto implements Reservavel {
-    
-    /** Número único que identifica o quarto */
+
+    private final UUID id;
     private int numero;
-    
-    /** Preço base da diária do quarto */
-    private double precoBase;
-    
-    /** Capacidade de hóspedes do quarto */
+    private BigDecimal precoBase;
     private int capacidade;
-    
-    /** Status do quarto: "disponivel" ou "reservado" */
-    private String status;
+    private StatusQuarto status;
 
     /**
-     * Constrói um novo Quarto com número, preço base e capacidade.
-     * 
-     * O status inicial do quarto é definido como "disponível".
-     * 
-     * @param numero o número único do quarto
-     * @param precoBase o preço base da diária
-     * @param capacidade a capacidade de hóspedes
-     * @throws IllegalArgumentException se o número ou preço forem negativos,
-     *         ou se a capacidade for negativa
+     * Constrói um novo quarto com status inicial {@link StatusQuarto#DISPONIVEL}.
+     *
+     * @param numero número positivo único do quarto
+     * @param precoBase preço base positivo da diária
+     * @param capacidade capacidade positiva de hóspedes
      */
-    public Quarto(int numero, double precoBase, int capacidade) {
+    protected Quarto(int numero, BigDecimal precoBase, int capacidade) {
+        this.id = UUID.randomUUID();
         setNumero(numero);
         setPrecoBase(precoBase);
         setCapacidade(capacidade);
-        setStatus("disponivel");
+        this.status = StatusQuarto.DISPONIVEL;
     }
 
-    /**
-     * Obtém o número do quarto.
-     * 
-     * @return o número único do quarto
-     */
-    public int getNumero(){
+    public UUID getId() {
+        return id;
+    }
+
+    public int getNumero() {
         return numero;
     }
 
-    /**
-     * Obtém o preço base da diária do quarto.
-     * 
-     * @return o preço base
-     */
-    public double getPrecoBase() {
+    public void setNumero(int numero) {
+        if (numero <= 0) {
+            throw new DadosInvalidosException("Número do quarto deve ser maior que zero.");
+        }
+        this.numero = numero;
+    }
+
+    public BigDecimal getPrecoBase() {
         return precoBase;
     }
 
-    /**
-     * Obtém a capacidade de hóspedes do quarto.
-     * 
-     * @return a capacidade
-     */
+    public void setPrecoBase(BigDecimal precoBase) {
+        if (precoBase == null) {
+            throw new DadosNaoInformadosException("Preço base deve ser informado.");
+        }
+        if (precoBase.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DadosInvalidosException("Preço base deve ser maior que zero.");
+        }
+        this.precoBase = precoBase.setScale(2, RoundingMode.HALF_UP);
+    }
+
     public int getCapacidade() {
         return capacidade;
     }
 
-    /**
-     * Obtém o status atual do quarto.
-     * 
-     * @return o status ("disponivel" ou "reservado")
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * Define o número do quarto.
-     * 
-     * @param numero o número a ser atribuído
-     * @throws IllegalArgumentException se o número for negativo
-     */
-    public void setNumero(int numero) {
-        if(numero<0){
-            throw new IllegalArgumentException("Numero inválido.");
-        }
-        
-        this.numero = numero; 
-    }
-    
-    /**
-     * Define o preço base da diária do quarto.
-     * 
-     * @param precoBase o preço a ser atribuído
-     * @throws IllegalArgumentException se o preço for negativo
-     */
-    public void setPrecoBase(double precoBase) {
-        if(precoBase<0){
-            throw new IllegalArgumentException("Preco não pode ser negativo.");
-        }
-
-        this.precoBase = precoBase;
-    }
-
-    /**
-     * Define a capacidade de hóspedes do quarto.
-     * 
-     * @param capacidade a capacidade a ser atribuída
-     * @throws IllegalArgumentException se a capacidade for negativa
-     */
     public void setCapacidade(int capacidade) {
-        if(capacidade<0){
-            throw new IllegalArgumentException("Capacidade deve ser maior que zero.");
+        if (capacidade <= 0) {
+            throw new DadosInvalidosException("Capacidade deve ser maior que zero.");
         }
         this.capacidade = capacidade;
     }
 
-    /**
-     * Define o status do quarto.
-     * 
-     * @param status o status a ser atribuído ("disponivel" ou "reservado")
-     * @throws IllegalArgumentException se o status for inválido
-     */
-    private void setStatus(String status) {
-        if(!"disponivel".equals(status) && !"reservado".equals(status)){
-            throw new IllegalArgumentException("Status inválido.");
-        }
-        this.status = status;
+    public StatusQuarto getStatus() {
+        return status;
     }
 
-    /**
-     * Verifica se o quarto está disponível para reserva.
-     * 
-     * @return true se o quarto está disponível; false caso contrário
-     */
+    @Override
     public boolean estaDisponivel() {
-        return "disponivel".equals(status);
+        return status == StatusQuarto.DISPONIVEL;
     }
 
-    /**
-     * Marca o quarto como reservado.
-     * 
-     * O quarto só pode ser reservado se estiver disponível.
-     */
-    public void reservar(){
-        if("disponivel".equals(status)){
-            setStatus("reservado");
+    @Override
+    public void ocupar() {
+        if (status != StatusQuarto.DISPONIVEL) {
+            throw new IllegalStateException(
+                    "Quarto " + numero + " não pode ser ocupado pois está " + status.getDescricao() + ".");
         }
+        this.status = StatusQuarto.OCUPADO;
     }
 
-    /**
-     * Libera o quarto, marcando como disponível.
-     * 
-     * O quarto só pode ser liberado se estiver reservado.
-     */
-    public void liberar(){
-        if("reservado".equals(status)){
-            setStatus("disponivel");
+    @Override
+    public void liberar() {
+        if (status != StatusQuarto.OCUPADO) {
+            throw new IllegalStateException(
+                    "Quarto " + numero + " não pode ser liberado pois está " + status.getDescricao() + ".");
         }
+        this.status = StatusQuarto.DISPONIVEL;
     }
 
     /**
-     * Calcula o valor da diária do quarto.
-     * 
-     * Método abstrato que deve ser implementado pelas subclasses
-     * com a lógica específica de cálculo de preço.
-     * 
-     * @return o valor da diária
+     * Coloca um quarto disponível em manutenção.
+     *
+     * @throws IllegalStateException se o quarto não estiver disponível
      */
-    public abstract double calcularDiaria();
+    public void colocarEmManutencao() {
+        if (status != StatusQuarto.DISPONIVEL) {
+            throw new IllegalStateException(
+                    "Quarto " + numero + " não pode entrar em manutenção pois está " + status.getDescricao() + ".");
+        }
+        this.status = StatusQuarto.MANUTENCAO;
+    }
+
+    /**
+     * Retorna um quarto em manutenção para disponível.
+     *
+     * @throws IllegalStateException se o quarto não estiver em manutenção
+     */
+    public void finalizarManutencao() {
+        if (status != StatusQuarto.MANUTENCAO) {
+            throw new IllegalStateException(
+                    "Quarto " + numero + " não está em manutenção.");
+        }
+        this.status = StatusQuarto.DISPONIVEL;
+    }
+
+    @Override
+    public abstract BigDecimal calcularDiaria();
 
     /**
      * Retorna uma descrição detalhada do quarto.
-     * 
-     * Método abstrato que deve ser implementado pelas subclasses
-     * com informações específicas sobre o tipo de quarto.
-     * 
-     * @return uma string com a descrição do quarto.
+     *
+     * @return texto formatado descrevendo o quarto
      */
     public abstract String exibirDescricao();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Quarto other)) {
+            return false;
+        }
+        return numero == other.numero;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero);
+    }
 }

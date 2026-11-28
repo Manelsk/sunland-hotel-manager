@@ -1,32 +1,33 @@
 package com.sunland.hotel.interfaces;
 
+import java.math.BigDecimal;
+
 /**
- * Interface que define o contrato para objetos que podem ser reservados.
- * 
- * Define operações básicas de reserva: reservar, liberar e verificar
- * disponibilidade. Implementada por classes que representam recursos
- * do hotel que podem ser reservados.
- * 
- * @author Sistema Sunland Hotel Manager
- * @version 1.0
- * @since 1.0
+ * Contrato para recursos do hotel que podem ser ocupados, liberados e precificados.
  */
-public interface Reservavel{
-    
+public interface Reservavel {
+
     /**
-     * Marca o recurso como reservado.
+     * Marca o recurso como ocupado durante uma estadia ativa.
      */
-    public void reservar();
-    
+    void ocupar();
+
     /**
-     * Libera o recurso, marcando-o como disponível.
+     * Libera o recurso após término da estadia.
      */
-    public void liberar();
-    
+    void liberar();
+
     /**
-     * Verifica se o recurso está disponível para reserva.
-     * 
-     * @return true se o recurso está disponível; false caso contrário
+     * Verifica se o recurso está disponível (não ocupado e não em manutenção).
+     *
+     * @return {@code true} se disponível; {@code false} caso contrário
      */
-    public boolean estaDisponivel();
+    boolean estaDisponivel();
+
+    /**
+     * Calcula o valor da diária do recurso com precisão monetária.
+     *
+     * @return valor da diária
+     */
+    BigDecimal calcularDiaria();
 }

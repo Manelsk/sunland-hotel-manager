@@ -1,6 +1,8 @@
 package com.sunland.hotel;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
+import com.sunland.hotel.enums.*;
 import com.sunland.hotel.models.*;
 import com.sunland.hotel.exceptions.*;
 
@@ -159,7 +161,7 @@ public class Main {
                         boolean possuiArCondicionado = lerBoolean(scanner, "O quarto possui ar-condicionado? (S/N): ");
 
                         try {
-                            QuartoSimples quartoSimples = new QuartoSimples(numero, precoBase, capacidade, possuiArCondicionado);
+                            QuartoSimples quartoSimples = new QuartoSimples(numero, BigDecimal.valueOf(precoBase), capacidade, possuiArCondicionado);
                             hotel.adicionarQuarto(quartoSimples);
                             System.out.println("\n[QUARTO SIMPLES CADASTRADO COM SUCESSO!]");
                         } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
@@ -183,7 +185,7 @@ public class Main {
                         boolean possuiVaranda = lerBoolean(scanner, "O quarto possui varanda? (S/N): ");
 
                         try {
-                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, precoBase, capacidade, tipoCama, possuiVaranda);
+                            QuartoDuplo quartoDuplo = new QuartoDuplo(numero, BigDecimal.valueOf(precoBase), capacidade, TipoCama.fromString(tipoCama), possuiVaranda);
                             hotel.adicionarQuarto(quartoDuplo);
                             System.out.println("\n[QUARTO DUPLO CADASTRADO COM SUCESSO!]");
                         } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException
@@ -204,7 +206,7 @@ public class Main {
                         String tipoSuite = scanner.nextLine().trim();
 
                         try {
-                            Suite Suite = new Suite(numero, precoBase, capacidade, tipoSuite);
+                            Suite Suite = new Suite(numero, BigDecimal.valueOf(precoBase), capacidade, TipoSuite.fromString(tipoSuite));
                             hotel.adicionarQuarto(Suite);
                             System.out.println("\n[QUARTO SUÍTE CADASTRADO COM SUCESSO!]");
                         } catch (DadosNaoInformadosException | DadosInexistentesException | DadosInvalidosException

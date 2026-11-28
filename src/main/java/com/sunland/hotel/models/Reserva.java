@@ -1,5 +1,7 @@
 package com.sunland.hotel.models;
 
+import java.math.BigDecimal;
+
 /**
  * Representa uma reserva de quarto no hotel.
  * 
@@ -54,7 +56,7 @@ public class Reserva{
     public void confirmaReserva() {
         if("Pendente".equals(estadoReserva)){ 
             this.estadoReserva = "Confirmada";
-            quarto.reservar();
+            quarto.ocupar();
         } else {
             throw new IllegalStateException("Confirmacao da reserva ja foi realizada ou o quarto nao esta disponivel.");
         }
@@ -178,7 +180,7 @@ public class Reserva{
      * @return o valor total da reserva
      */
     public double calcularValorTotal() {
-            return quarto.calcularDiaria() * qtdeDiarias;
+            return quarto.calcularDiaria().multiply(BigDecimal.valueOf(qtdeDiarias)).doubleValue();
     }
 
     /**
