@@ -1,201 +1,223 @@
 package com.sunland.hotel.models;
 
+import com.sunland.hotel.enums.EstadoReserva;
+import com.sunland.hotel.enums.StatusQuarto;
+import com.sunland.hotel.exceptions.ConflitoReservaException;
+import com.sunland.hotel.exceptions.DadosInvalidosException;
+import com.sunland.hotel.exceptions.DadosNaoInformadosException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
- * Representa uma reserva de quarto no hotel.
- * 
- * A classe Reserva encapsula todas as informações e operações relacionadas
- * a uma reserva, incluindo hóspede, quarto, período de diárias e controle de
- * ciclo de vida da reserva (Pendente → Confirmada → Ativa → Finalizada).
- * 
- * @author Sistema Sunland Hotel Manager
- * @version 1.0
- * @since 1.0
+ * Representa uma reserva de quarto no hotel por intervalo de datas,
+ * com snapshot financeiro e máquina de estados estrita.
  */
-public class Reserva{
-    /** Hóspede que realizou a reserva */
-    private Hospede hospede;
-    
-    /** Quarto reservado */
-    private Quarto quarto;
-    
-    /** Quantidade de diárias da reserva */
-    private int qtdeDiarias;
-    
-    /** Estado da reserva: Pendente, Confirmada, Ativa ou Finalizada */
-    private String estadoReserva;
+public class Reserva {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private final UUID id;
+    private final Hospede hospede;
+    private final Quarto quarto;
+    private final LocalDate dataCheckIn;
+    private final LocalDate dataCheckOut;
+    private final BigDecimal valorDiariaSnapshot;
+    private final BigDecimal valorTotal;
+    private EstadoReserva estadoReserva;
 
     /**
-     * Constrói uma nova Reserva com os dados do hóspede, quarto e diárias.
-     * 
-     * O estado inicial da reserva é "Pendente".
-     * 
-     * @param hospede o hóspede que está realizando a reserva
-     * @param quarto o quarto a ser reservado
-     * @param qtdeDiarias a quantidade de diárias
-     * @throws IllegalArgumentException se o hóspede ou quarto forem null,
-     *         se o quarto não estiver disponível, ou se a quantidade de
-     *         diárias for menor ou igual a zero
+     * Constrói uma reserva no estado {@link EstadoReserva#PENDENTE} congelando o valor da diária.
+     *
+     * @param hospede hóspede titular
+     * @param quarto quarto reservado
+     * @param dataCheckIn data de entrada
+     * @param dataCheckOut data de saída (posterior ao check-in)
      */
-    public Reserva(Hospede hospede, Quarto quarto, int qtdeDiarias) {
-        setHospede(hospede);
-        setQuarto(quarto);
-        setQtdeDiarias(qtdeDiarias);
-        this.estadoReserva = "Pendente";
-    }
+    public Reserva(Hospede hospede, Quarto quarto, LocalDate dataCheckIn, LocalDate dataCheckOut) {
+        if (hospede == null) {
+            throw new DadosNaoInformadosException("Hóspede deve ser informado.");
+        }
+        if (quarto == null) {
+            throw new DadosNaoInformadosException("Quarto deve ser informado.");
+        }
+        if (dataCheckIn == null || dataCheckOut == null) {
+            throw new DadosNaoInformadosException("Datas de check-in e check-out devem ser informadas.");
+        }
+        if (!dataCheckOut.isAfter(dataCheckIn)) {
+            throw new DadosInvalidosException("A data de check-out deve ser posterior à data de check-in.");
+        }
+        if (quarto.getStatus() == StatusQuarto.MANUTENCAO) {
+            throw new ConflitoReservaException(
+                    "Quarto " + quarto.getNumero() + " está em manutenção e não pode ser reservado.");
+        }
 
-    /**
-     * Confirma uma reserva pendente.
-     * 
-     * Muda o estado de "Pendente" para "Confirmada" e marca o quarto como reservado.
-     * 
-     * @throws IllegalStateException se a reserva já foi confirmada ou se não está
-     *         no estado "Pendente"
-     */
-    public void confirmaReserva() {
-        if("Pendente".equals(estadoReserva)){ 
-            this.estadoReserva = "Confirmada";
-            quarto.ocupar();
-        } else {
-            throw new IllegalStateException("Confirmacao da reserva ja foi realizada ou o quarto nao esta disponivel.");
-        }
-    }
-    
-    /**
-     * Define o hóspede da reserva.
-     * 
-     * @param hospede o hóspede a ser atribuído
-     * @throws IllegalArgumentException se o hóspede for null
-     */
-    public void setHospede(Hospede hospede) {
-        if(hospede == null){
-            throw new IllegalArgumentException("Hospede não informado.");
-        }
+        this.id = UUID.randomUUID();
         this.hospede = hospede;
-    }
-
-    /**
-     * Define o quarto da reserva.
-     * 
-     * @param quarto o quarto a ser atribuído
-     * @throws IllegalArgumentException se o quarto for null ou não estiver disponível
-     */
-    public void setQuarto(Quarto quarto) {
-        if(quarto == null || quarto.estaDisponivel() == false){
-            throw new IllegalArgumentException("Quarto não informado ou não disponível.");
-        }
         this.quarto = quarto;
+        this.dataCheckIn = dataCheckIn;
+        this.dataCheckOut = dataCheckOut;
+        this.valorDiariaSnapshot = quarto.calcularDiaria().setScale(2, RoundingMode.HALF_UP);
+        long diarias = ChronoUnit.DAYS.between(dataCheckIn, dataCheckOut);
+        this.valorTotal = this.valorDiariaSnapshot
+                .multiply(BigDecimal.valueOf(diarias))
+                .setScale(2, RoundingMode.HALF_UP);
+        this.estadoReserva = EstadoReserva.PENDENTE;
     }
 
-    /**
-     * Define a quantidade de diárias da reserva.
-     * 
-     * @param qtdeDiarias a quantidade de diárias a ser atribuída
-     * @throws IllegalArgumentException se a quantidade de diárias for menor ou igual a zero
-     */
-    public void setQtdeDiarias(int qtdeDiarias) {
-        if(qtdeDiarias <= 0){
-            throw new IllegalArgumentException("Quantidade de diárias deve ser maior que zero.");
-        }
-        this.qtdeDiarias = qtdeDiarias;
+    public UUID getId() {
+        return id;
     }
 
-    /**
-     * Obtém o hóspede da reserva.
-     * 
-     * @return o hóspede
-     */
+    public String getCodigoCurto() {
+        return id.toString().substring(0, 8).toUpperCase();
+    }
+
     public Hospede getHospede() {
         return hospede;
     }
 
-    /**
-     * Obtém o quarto da reserva.
-     * 
-     * @return o quarto
-     */
     public Quarto getQuarto() {
         return quarto;
     }
-    
-    /**
-     * Obtém a quantidade de diárias da reserva.
-     * 
-     * @return a quantidade de diárias
-     */
-    public int getQtdeDiarias() {
-        return qtdeDiarias;
+
+    public LocalDate getDataCheckIn() {
+        return dataCheckIn;
     }
-    
-    /**
-     * Obtém o estado atual da reserva.
-     * 
-     * @return o estado da reserva (Pendente, Confirmada, Ativa ou Finalizada)
-     */
-    public String getEstadoReserva() {
+
+    public LocalDate getDataCheckOut() {
+        return dataCheckOut;
+    }
+
+    public long getQtdeDiarias() {
+        return ChronoUnit.DAYS.between(dataCheckIn, dataCheckOut);
+    }
+
+    public BigDecimal getValorDiariaSnapshot() {
+        return valorDiariaSnapshot;
+    }
+
+    public BigDecimal calcularValorTotal() {
+        return valorTotal;
+    }
+
+    public EstadoReserva getEstadoReserva() {
         return estadoReserva;
     }
 
     /**
-     * Realiza o check-in da reserva.
-     * 
-     * Muda o estado de "Confirmada" para "Ativa", indicando que o hóspede
-     * chegou e ocupou o quarto.
-     * 
-     * @throws IllegalStateException se a reserva não está no estado "Confirmada"
+     * Confirma uma reserva pendente ({@code PENDENTE -> CONFIRMADA}).
+     *
+     * @throws IllegalStateException se a reserva não estiver pendente
      */
-    public void realizarCheckIn(){
-        if("Confirmada".equals(estadoReserva)){
-            estadoReserva = "Ativa";
-        } else {
-            throw new IllegalStateException("Para realizar o check-in, a reserva deve ser confirmada.");
+    public void confirmar() {
+        if (estadoReserva != EstadoReserva.PENDENTE) {
+            throw new IllegalStateException(
+                    "Reserva só pode ser confirmada quando está Pendente (estado atual: "
+                            + estadoReserva.getDescricao() + ").");
         }
+        this.estadoReserva = EstadoReserva.CONFIRMADA;
     }
 
     /**
-     * Realiza o check-out da reserva.
-     * 
-     * Muda o estado de "Ativa" para "Finalizada" e libera o quarto para
-     * novas reservas.
-     * 
-     * @throws IllegalStateException se a reserva não está no estado "Ativa"
+     * Realiza o check-in ({@code CONFIRMADA -> ATIVA}) e ocupa o quarto.
+     *
+     * @throws IllegalStateException se a reserva não estiver confirmada ou o quarto não puder ser ocupado
      */
-    public void realizarCheckOut(){
-        if("Ativa".equals(estadoReserva)){
-            estadoReserva = "Finalizada";
-            quarto.liberar();
-
-        } else {
-            throw new IllegalStateException("Para realizar o check-out, a reserva deve estar ativa.");
+    public void realizarCheckIn() {
+        if (estadoReserva != EstadoReserva.CONFIRMADA) {
+            throw new IllegalStateException(
+                    "Para realizar check-in, a reserva deve estar Confirmada (estado atual: "
+                            + estadoReserva.getDescricao() + ").");
         }
-    }
-    
-    /**
-     * Calcula o valor total da reserva.
-     * 
-     * O valor total é calculado multiplicando o valor da diária do quarto
-     * pela quantidade de diárias.
-     * 
-     * @return o valor total da reserva
-     */
-    public double calcularValorTotal() {
-            return quarto.calcularDiaria().multiply(BigDecimal.valueOf(qtdeDiarias)).doubleValue();
+        quarto.ocupar();
+        this.estadoReserva = EstadoReserva.ATIVA;
     }
 
     /**
-     * Retorna uma descrição detalhada da reserva.
-     * 
-     * A descrição inclui informações do hóspede, número do quarto,
-     * quantidade de diárias, estado e valor total da reserva.
-     * 
-     * @return uma string com a descrição formatada da reserva
+     * Realiza o check-out ({@code ATIVA -> FINALIZADA}) e libera o quarto.
+     *
+     * @throws IllegalStateException se a reserva não estiver ativa
      */
+    public void realizarCheckOut() {
+        if (estadoReserva != EstadoReserva.ATIVA) {
+            throw new IllegalStateException(
+                    "Para realizar check-out, a reserva deve estar Ativa (estado atual: "
+                            + estadoReserva.getDescricao() + ").");
+        }
+        quarto.liberar();
+        this.estadoReserva = EstadoReserva.FINALIZADA;
+    }
+
+    /**
+     * Cancela uma reserva pendente ou confirmada ({@code PENDENTE|CONFIRMADA -> CANCELADA}).
+     *
+     * @throws IllegalStateException se a reserva estiver ativa, finalizada ou já cancelada
+     */
+    public void cancelar() {
+        if (estadoReserva != EstadoReserva.PENDENTE && estadoReserva != EstadoReserva.CONFIRMADA) {
+            throw new IllegalStateException(
+                    "Não é possível cancelar uma reserva no estado " + estadoReserva.getDescricao() + ".");
+        }
+        this.estadoReserva = EstadoReserva.CANCELADA;
+    }
+
+    /**
+     * Indica se esta reserva bloqueia a agenda do quarto para novas reservas.
+     *
+     * @return {@code true} se estiver Confirmada ou Ativa
+     */
+    public boolean ocupaAgenda() {
+        return estadoReserva == EstadoReserva.CONFIRMADA || estadoReserva == EstadoReserva.ATIVA;
+    }
+
+    /**
+     * Verifica se o período {@code [inicio, fim)} sobrepõe o período desta reserva.
+     * Reservas encostadas (check-out de uma no mesmo dia do check-in de outra) não conflitam.
+     *
+     * @param inicio data de entrada a testar
+     * @param fim data de saída a testar
+     * @return {@code true} se houver sobreposição de dias
+     */
+    public boolean conflitaCom(LocalDate inicio, LocalDate fim) {
+        if (inicio == null || fim == null) {
+            throw new DadosNaoInformadosException("Datas de início e fim devem ser informadas.");
+        }
+        if (!fim.isAfter(inicio)) {
+            throw new DadosInvalidosException("A data de fim deve ser posterior à data de início.");
+        }
+        return this.dataCheckIn.isBefore(fim) && this.dataCheckOut.isAfter(inicio);
+    }
+
     public String exibirDescricao() {
-        return "Reserva do hóspede: " + hospede.getNome() + "\n"
-                + "Quarto número: " + quarto.getNumero() + "\n"
-                + "Quantidade de diárias: " + qtdeDiarias + "\n"
-                + "Estado da reserva: " + estadoReserva + "\n"
-                + "Valor total: R$ " + calcularValorTotal() + "\n";
+        return "Reserva [" + getCodigoCurto() + "] | Hóspede: " + hospede.getNome()
+                + " (" + hospede.getCpfFormatado() + ")\n"
+                + "Quarto nº: " + quarto.getNumero()
+                + " | Período: " + dataCheckIn.format(DATE_FORMATTER)
+                + " até " + dataCheckOut.format(DATE_FORMATTER)
+                + " (" + getQtdeDiarias() + " diárias)\n"
+                + "Estado: " + estadoReserva.getDescricao()
+                + " | Diária: R$ " + valorDiariaSnapshot
+                + " | Total: R$ " + valorTotal + "\n";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Reserva other)) {
+            return false;
+        }
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

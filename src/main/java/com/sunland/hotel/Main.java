@@ -327,7 +327,7 @@ public class Main {
                             System.out.println("\n[RESERVA CANCELADA PELO USUÁRIO!]");
                             break;
                         }
-                        reserva.confirmaReserva();
+                        reserva.confirmar();
                         System.out.println("\n[RESERVA CONFIRMADA COM SUCESSO!]");
                     } catch (DadosInexistentesException | IllegalStateException e) {
                         System.out.println("\n[ERRO AO CONFIRMAR RESERVA!]");

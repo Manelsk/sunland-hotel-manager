@@ -1,7 +1,9 @@
 package com.sunland.hotel.models;
 
+import com.sunland.hotel.enums.EstadoReserva;
 import com.sunland.hotel.exceptions.DadosInexistentesException;
 import com.sunland.hotel.exceptions.DadosNaoInformadosException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +78,8 @@ public class Hotel {
         if(quartos.contains(quarto) == false){
             throw new DadosInexistentesException("Quarto informado nao existe.");
         }
-        Reserva reserva = new Reserva(hospede, quarto, qtdeDiarias);
+        LocalDate checkIn = LocalDate.now();
+        Reserva reserva = new Reserva(hospede, quarto, checkIn, checkIn.plusDays(qtdeDiarias));
         reservas.add(reserva);
     }
     
@@ -157,7 +160,7 @@ public class Hotel {
     public void excluirReserva(Reserva reserva) throws DadosInexistentesException {
         if(reservas.contains(reserva) == false){
             throw new DadosInexistentesException("Reserva informada nao existe.");
-        }else if("Confirmada".equals(reserva.getEstadoReserva())){
+        }else if(EstadoReserva.CONFIRMADA == reserva.getEstadoReserva()){
             throw new IllegalStateException("Reserva informada nao pode ser excluida pois ja foi confirmada.");
         }
         
