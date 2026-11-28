@@ -1,214 +1,318 @@
 package com.sunland.hotel.models;
 
 import com.sunland.hotel.enums.EstadoReserva;
+import com.sunland.hotel.enums.StatusQuarto;
+import com.sunland.hotel.exceptions.ConflitoReservaException;
 import com.sunland.hotel.exceptions.DadosInexistentesException;
+import com.sunland.hotel.exceptions.DadosInvalidosException;
 import com.sunland.hotel.exceptions.DadosNaoInformadosException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
- * Representa um hotel com gerenciamento de quartos, hóspedes e reservas.
- * 
- * A classe Hotel encapsula a lógica de negócio para gerenciar quartos disponíveis,
- * registrar hóspedes e criar/gerenciar reservas, garantindo a integridade dos dados
- * através de validações e verificações de existência.
+ * Gerencia o catálogo de quartos, cadastro de hóspedes e agenda de reservas do hotel,
+ * garantindo unicidade, prevenção de overbooking e integridade nas exclusões.
  */
 public class Hotel {
-    /** Lista de quartos do hotel */
-    private List<Quarto> quartos;
-    
-    /** Lista de hóspedes registrados no hotel */
-    private List<Hospede> hospedes;
-    
-    /** Lista de reservas realizadas no hotel */
-    private List<Reserva> reservas;
+
+    private final List<Quarto> quartos;
+    private final List<Hospede> hospedes;
+    private final List<Reserva> reservas;
 
     public Hotel() {
         this.quartos = new ArrayList<>();
         this.hospedes = new ArrayList<>();
         this.reservas = new ArrayList<>();
     }
-    
+
     /**
-     * Adiciona um novo quarto ao hotel.
-     * 
-     * @param quarto o quarto a ser adicionado
-     * @throws DadosNaoInformadosException se o quarto for null
-     * @throws IllegalArgumentException se já existe um quarto com o mesmo número
+     * Adiciona um quarto garantindo unicidade do número.
+     *
+     * @throws DadosNaoInformadosException se {@code quarto} for null
+     * @throws ConflitoReservaException se já existir quarto com o mesmo número
      */
-    public void adicionarQuarto(Quarto quarto) throws DadosNaoInformadosException, IllegalArgumentException {
-        if(quarto == null){
+    public void adicionarQuarto(Quarto quarto) {
+        if (quarto == null) {
             throw new DadosNaoInformadosException("Quarto deve ser informado.");
         }
-        
-        for(Quarto q : quartos){
-            if(q.getNumero() == quarto.getNumero()){
-                throw new IllegalArgumentException("Quarto com numero " + quarto.getNumero() + " já existe, por favor escolha outro numero.");
+        for (Quarto existente : quartos) {
+            if (existente.getNumero() == quarto.getNumero()) {
+                throw new ConflitoReservaException(
+                        "Quarto com número " + quarto.getNumero() + " já existe.");
             }
         }
-            quartos.add(quarto);
+        quartos.add(quarto);
     }
 
     /**
-     * Adiciona um novo hóspede ao hotel.
-     * 
-     * @param hospede o hóspede a ser adicionado
-     * @throws DadosNaoInformadosException se o hóspede for null
+     * Adiciona um hóspede garantindo unicidade do CPF normalizado.
+     *
+     * @throws DadosNaoInformadosException se {@code hospede} for null
+     * @throws ConflitoReservaException se já existir hóspede com o mesmo CPF
      */
-    public void adicionarHospede(Hospede hospede) throws DadosNaoInformadosException {
-        if(hospede == null){
+    public void adicionarHospede(Hospede hospede) {
+        if (hospede == null) {
             throw new DadosNaoInformadosException("Hóspede deve ser informado.");
+        }
+        for (Hospede existente : hospedes) {
+            if (existente.getCpf().equals(hospede.getCpf())) {
+                throw new ConflitoReservaException(
+                        "Já existe um hóspede cadastrado com o CPF " + hospede.getCpfFormatado() + ".");
+            }
         }
         hospedes.add(hospede);
     }
 
     /**
-     * Cria uma nova reserva para um hóspede em um quarto.
-     * 
-     * @param hospede o hóspede que está realizando a reserva
-     * @param quarto o quarto a ser reservado
-     * @param qtdeDiarias a quantidade de diárias da reserva
-     * @throws DadosInexistentesException se o hóspede ou quarto não existem no hotel
+     * Verifica se o quarto está disponível para o período {@code [checkIn, checkOut)}.
      */
-    public void criarReserva(Hospede hospede, Quarto quarto, int qtdeDiarias) throws DadosInexistentesException {
-        if(hospedes.contains(hospede) == false){
-            throw new DadosInexistentesException("Hóspede informado nao existe.");
+    public boolean isQuartoDisponivel(Quarto quarto, LocalDate checkIn, LocalDate checkOut) {
+        if (quarto == null) {
+            throw new DadosNaoInformadosException("Quarto deve ser informado.");
         }
-        if(quartos.contains(quarto) == false){
-            throw new DadosInexistentesException("Quarto informado nao existe.");
+        if (checkIn == null || checkOut == null) {
+            throw new DadosNaoInformadosException("Datas de check-in e check-out devem ser informadas.");
         }
-        LocalDate checkIn = LocalDate.now();
-        Reserva reserva = new Reserva(hospede, quarto, checkIn, checkIn.plusDays(qtdeDiarias));
-        reservas.add(reserva);
+        if (!checkOut.isAfter(checkIn)) {
+            throw new DadosInvalidosException("A data de check-out deve ser posterior à data de check-in.");
+        }
+        if (quarto.getStatus() == StatusQuarto.MANUTENCAO) {
+            return false;
+        }
+        return !existeConflitoAgenda(quarto, checkIn, checkOut, null);
     }
-    
+
+    private boolean existeConflitoAgenda(Quarto quarto, LocalDate checkIn, LocalDate checkOut, UUID ignorarReservaId) {
+        for (Reserva reserva : reservas) {
+            if (ignorarReservaId != null && reserva.getId().equals(ignorarReservaId)) {
+                continue;
+            }
+            if (reserva.getQuarto().equals(quarto)
+                    && reserva.ocupaAgenda()
+                    && reserva.conflitaCom(checkIn, checkOut)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     * Busca um quarto pelo seu número.
-     * 
-     * @param numero o número do quarto a ser buscado
-     * @return o quarto encontrado
-     * @throws DadosInexistentesException se nenhum quarto com esse número foi encontrado
+     * Lista todos os quartos disponíveis para o período informado.
      */
-    public Quarto buscarQuartoporNumero(int numero) throws DadosInexistentesException {
-        for(Quarto quarto : quartos){
-            if(quarto.getNumero() == numero){
+    public List<Quarto> listarQuartosDisponiveis(LocalDate checkIn, LocalDate checkOut) {
+        if (checkIn == null || checkOut == null) {
+            throw new DadosNaoInformadosException("Datas de check-in e check-out devem ser informadas.");
+        }
+        if (!checkOut.isAfter(checkIn)) {
+            throw new DadosInvalidosException("A data de check-out deve ser posterior à data de check-in.");
+        }
+        List<Quarto> disponiveis = new ArrayList<>();
+        for (Quarto quarto : quartos) {
+            if (isQuartoDisponivel(quarto, checkIn, checkOut)) {
+                disponiveis.add(quarto);
+            }
+        }
+        return Collections.unmodifiableList(disponiveis);
+    }
+
+    /**
+     * Cria uma nova reserva pendente após validar existência das entidades e disponibilidade no período.
+     */
+    public Reserva criarReserva(Hospede hospede, Quarto quarto, LocalDate checkIn, LocalDate checkOut) {
+        if (hospede == null) {
+            throw new DadosNaoInformadosException("Hóspede deve ser informado.");
+        }
+        if (quarto == null) {
+            throw new DadosNaoInformadosException("Quarto deve ser informado.");
+        }
+        if (!hospedes.contains(hospede)) {
+            throw new DadosInexistentesException("Hóspede informado não está cadastrado no hotel.");
+        }
+        if (!quartos.contains(quarto)) {
+            throw new DadosInexistentesException("Quarto informado não está cadastrado no hotel.");
+        }
+        if (!isQuartoDisponivel(quarto, checkIn, checkOut)) {
+            throw new ConflitoReservaException(
+                    "Quarto " + quarto.getNumero() + " indisponível para o período selecionado.");
+        }
+
+        Reserva reserva = new Reserva(hospede, quarto, checkIn, checkOut);
+        reservas.add(reserva);
+        return reserva;
+    }
+
+    /**
+     * Confirma uma reserva pendente revalidando conflitos de agenda para evitar overbooking.
+     */
+    public void confirmarReserva(UUID reservaId) {
+        Reserva reserva = buscarReservaPorId(reservaId);
+        if (reserva.getQuarto().getStatus() == StatusQuarto.MANUTENCAO) {
+            throw new ConflitoReservaException(
+                    "Quarto " + reserva.getQuarto().getNumero() + " está em manutenção.");
+        }
+        if (existeConflitoAgenda(
+                reserva.getQuarto(),
+                reserva.getDataCheckIn(),
+                reserva.getDataCheckOut(),
+                reserva.getId())) {
+            throw new ConflitoReservaException(
+                    "Conflito de agenda: o quarto " + reserva.getQuarto().getNumero()
+                            + " já possui reserva confirmada ou ativa neste período.");
+        }
+        reserva.confirmar();
+    }
+
+    public void realizarCheckIn(UUID reservaId) {
+        buscarReservaPorId(reservaId).realizarCheckIn();
+    }
+
+    public void realizarCheckOut(UUID reservaId) {
+        buscarReservaPorId(reservaId).realizarCheckOut();
+    }
+
+    public void cancelarReserva(UUID reservaId) {
+        buscarReservaPorId(reservaId).cancelar();
+    }
+
+    public Quarto buscarQuartoPorNumero(int numero) {
+        for (Quarto quarto : quartos) {
+            if (quarto.getNumero() == numero) {
                 return quarto;
             }
         }
-        throw new DadosInexistentesException("Quarto com numero " + numero + " nao encontrado.");
+        throw new DadosInexistentesException("Quarto com número " + numero + " não encontrado.");
     }
 
-    /**
-     * Busca um hóspede pelo seu CPF.
-     * 
-     * @param cpf o CPF do hóspede a ser buscado
-     * @return o hóspede encontrado
-     * @throws DadosInexistentesException se nenhum hóspede com esse CPF foi encontrado
-     */
-    public Hospede buscarHospedePorCpf(String cpf) throws DadosInexistentesException {
-        for(Hospede hospede : hospedes){
-            if(hospede.getCpf().equals(cpf)){
+    public Hospede buscarHospedePorCpf(String cpf) {
+        String cpfNormalizado = Hospede.normalizarCpf(cpf);
+        for (Hospede hospede : hospedes) {
+            if (hospede.getCpf().equals(cpfNormalizado)) {
                 return hospede;
             }
         }
-        throw new DadosInexistentesException("Hóspede com CPF " + cpf + " nao encontrado.");
+        throw new DadosInexistentesException("Hóspede com CPF " + cpf + " não encontrado.");
     }
 
-    /**
-     * Busca uma reserva pelo CPF do hóspede associado.
-     * 
-     * @param cpf o CPF do hóspede cuja reserva será buscada
-     * @return a reserva encontrada
-     * @throws DadosInexistentesException se nenhuma reserva para esse CPF foi encontrada
-     */
-    public Reserva buscarReservaPorCpf(String cpf) throws DadosInexistentesException {
-        for(Reserva reserva : reservas){
-            if(reserva.getHospede().getCpf().equals(cpf)){
+    public Reserva buscarReservaPorId(UUID id) {
+        if (id == null) {
+            throw new DadosNaoInformadosException("ID da reserva deve ser informado.");
+        }
+        for (Reserva reserva : reservas) {
+            if (reserva.getId().equals(id)) {
                 return reserva;
             }
         }
-        throw new DadosInexistentesException("Reserva para hóspede com CPF " + cpf + " nao encontrada.");
+        throw new DadosInexistentesException("Reserva com ID " + id + " não encontrada.");
     }
 
     /**
-     * Exclui um hóspede do hotel.
-     * 
-     * @param hospede o hóspede a ser excluído
-     * @throws DadosInexistentesException se o hóspede não existe no hotel
-     * @throws IllegalStateException se o hóspede possui reservas ativas
+     * Busca uma reserva pelo código curto de 8 caracteres exibido na CLI.
      */
-    public void excluirHospede(Hospede hospede) throws DadosInexistentesException {
-        if(hospedes.contains(hospede) == false){
-            throw new DadosInexistentesException("Hóspede informado nao existe.");
+    public Reserva buscarReservaPorCodigoCurto(String codigo) {
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new DadosNaoInformadosException("Código da reserva deve ser informado.");
+        }
+        String normalizado = codigo.trim().toUpperCase();
+        for (Reserva reserva : reservas) {
+            if (reserva.getCodigoCurto().equals(normalizado)) {
+                return reserva;
+            }
+        }
+        throw new DadosInexistentesException("Reserva com código " + normalizado + " não encontrada.");
+    }
+
+    /**
+     * Retorna todas as reservas associadas ao CPF informado (normalizado).
+     */
+    public List<Reserva> buscarReservasPorCpf(String cpf) {
+        String cpfNormalizado = Hospede.normalizarCpf(cpf);
+        List<Reserva> encontradas = new ArrayList<>();
+        for (Reserva reserva : reservas) {
+            if (reserva.getHospede().getCpf().equals(cpfNormalizado)) {
+                encontradas.add(reserva);
+            }
+        }
+        return Collections.unmodifiableList(encontradas);
+    }
+
+    /**
+     * Exclui um hóspede caso não possua reservas em aberto (Pendente, Confirmada ou Ativa).
+     */
+    public void excluirHospede(Hospede hospede) {
+        if (hospede == null) {
+            throw new DadosNaoInformadosException("Hóspede deve ser informado.");
+        }
+        if (!hospedes.contains(hospede)) {
+            throw new DadosInexistentesException("Hóspede informado não existe.");
         }
         for (Reserva reserva : reservas) {
-        if (reserva.getHospede().equals(hospede)) {
-            throw new IllegalStateException("Hóspede informado não pode ser excluído pois possui reservas.");
+            if (reserva.getHospede().equals(hospede) && possuiVinculoAberto(reserva)) {
+                throw new IllegalStateException(
+                        "Hóspede não pode ser excluído pois possui reservas pendentes, confirmadas ou ativas.");
             }
         }
         hospedes.remove(hospede);
     }
-    
+
     /**
-     * Exclui uma reserva do hotel.
-     * 
-     * @param reserva a reserva a ser excluída
-     * @throws DadosInexistentesException se a reserva não existe no hotel
-     * @throws IllegalStateException se a reserva já foi confirmada
+     * Exclui uma reserva apenas se ela não estiver Confirmada nem Ativa.
      */
-    public void excluirReserva(Reserva reserva) throws DadosInexistentesException {
-        if(reservas.contains(reserva) == false){
-            throw new DadosInexistentesException("Reserva informada nao existe.");
-        }else if(EstadoReserva.CONFIRMADA == reserva.getEstadoReserva()){
-            throw new IllegalStateException("Reserva informada nao pode ser excluida pois ja foi confirmada.");
+    public void excluirReserva(Reserva reserva) {
+        if (reserva == null) {
+            throw new DadosNaoInformadosException("Reserva deve ser informada.");
         }
-        
+        if (!reservas.contains(reserva)) {
+            throw new DadosInexistentesException("Reserva informada não existe.");
+        }
+        if (reserva.ocupaAgenda()) {
+            throw new IllegalStateException(
+                    "Reserva no estado " + reserva.getEstadoReserva().getDescricao()
+                            + " não pode ser excluída; realize cancelamento ou check-out antes.");
+        }
         reservas.remove(reserva);
     }
 
     /**
-     * Exclui um quarto do hotel.
-     * 
-     * @param quarto o quarto a ser excluído
-     * @throws DadosInexistentesException se o quarto não existe no hotel
-     * @throws IllegalStateException se o quarto está reservado
+     * Exclui um quarto caso não esteja ocupado e não possua reservas em aberto.
      */
-    public void excluirQuarto(Quarto quarto) throws DadosInexistentesException {
-        if(quartos.contains(quarto) == false){
-            throw new DadosInexistentesException("Quarto informado nao existe.");
-        }else if(quarto.estaDisponivel() == false){
-            throw new IllegalStateException("Quarto informado nao pode ser excluido pois esta reservado.");
+    public void excluirQuarto(Quarto quarto) {
+        if (quarto == null) {
+            throw new DadosNaoInformadosException("Quarto deve ser informado.");
         }
-        
+        if (!quartos.contains(quarto)) {
+            throw new DadosInexistentesException("Quarto informado não existe.");
+        }
+        if (quarto.getStatus() == StatusQuarto.OCUPADO) {
+            throw new IllegalStateException("Quarto não pode ser excluído pois está ocupado.");
+        }
+        for (Reserva reserva : reservas) {
+            if (reserva.getQuarto().equals(quarto) && possuiVinculoAberto(reserva)) {
+                throw new IllegalStateException(
+                        "Quarto não pode ser excluído pois possui reservas pendentes, confirmadas ou ativas.");
+            }
+        }
         quartos.remove(quarto);
     }
 
-    /**
-     * Obtém a lista de hóspedes do hotel.
-     * 
-     * @return a lista de hóspedes
-     */
+    private boolean possuiVinculoAberto(Reserva reserva) {
+        EstadoReserva estado = reserva.getEstadoReserva();
+        return estado == EstadoReserva.PENDENTE
+                || estado == EstadoReserva.CONFIRMADA
+                || estado == EstadoReserva.ATIVA;
+    }
+
     public List<Hospede> getHospedes() {
-        return hospedes;
+        return Collections.unmodifiableList(hospedes);
     }
 
-    /**
-     * Obtém a lista de reservas do hotel.
-     * 
-     * @return a lista de reservas
-     */
     public List<Reserva> getReservas() {
-        return reservas;
+        return Collections.unmodifiableList(reservas);
     }
 
-    /**
-     * Obtém a lista de quartos do hotel.
-     * 
-     * @return a lista de quartos
-     */
     public List<Quarto> getQuartos() {
-        return quartos;
-    }   
+        return Collections.unmodifiableList(quartos);
+    }
 }
-

@@ -1,6 +1,7 @@
 package com.sunland.hotel;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Scanner;
 import com.sunland.hotel.enums.*;
 import com.sunland.hotel.models.*;
@@ -234,7 +235,7 @@ public class Main {
                     } else {
                         int numeroDeletar = lerInteiro(scanner, "Digite o número do quarto a ser deletado: ");
                         try {
-                            hotel.excluirQuarto(hotel.buscarQuartoporNumero(numeroDeletar));
+                            hotel.excluirQuarto(hotel.buscarQuartoPorNumero(numeroDeletar));
                             System.out.println("\n[QUARTO DELETADO COM SUCESSO!]");
                         } catch (DadosInexistentesException | IllegalStateException | IllegalArgumentException e) {
                             System.out.println("\n[ERRO AO DELETAR QUARTO!]");
@@ -286,11 +287,12 @@ public class Main {
                         Hospede hospede = hotel.buscarHospedePorCpf(cpfHospede);
 
                         int numeroQuarto = lerInteiro(scanner, "Digite o número do quarto: ");
-                        Quarto quarto = hotel.buscarQuartoporNumero(numeroQuarto);
+                        Quarto quarto = hotel.buscarQuartoPorNumero(numeroQuarto);
 
                         int qtdeDiarias = lerInteiro(scanner, "Digite a quantidade de diárias: ");
 
-                        hotel.criarReserva(hospede, quarto, qtdeDiarias);
+                        LocalDate hoje = LocalDate.now();
+                        hotel.criarReserva(hospede, quarto, hoje, hoje.plusDays(qtdeDiarias));
                         System.out.println("\n[RESERVA CRIADA COM SUCESSO!]");
 
                     } catch (DadosInexistentesException | IllegalArgumentException e) {
@@ -319,7 +321,8 @@ public class Main {
                     String cpfConfirmar = scanner.nextLine().trim();
 
                     try {
-                        Reserva reserva = hotel.buscarReservaPorCpf(cpfConfirmar);
+                        Reserva reserva = hotel.buscarReservasPorCpf(cpfConfirmar).stream().findFirst()
+                                .orElseThrow(() -> new DadosInexistentesException("Nenhuma reserva encontrada."));
                         System.out.println("\n[RESERVA ENCONTRADA!]");
                         System.out.println(reserva.exibirDescricao());
                         boolean confirmar = lerBoolean(scanner, "Deseja confirmar esta reserva? (S/N): ");
@@ -327,9 +330,9 @@ public class Main {
                             System.out.println("\n[RESERVA CANCELADA PELO USUÁRIO!]");
                             break;
                         }
-                        reserva.confirmar();
+                        hotel.confirmarReserva(reserva.getId());
                         System.out.println("\n[RESERVA CONFIRMADA COM SUCESSO!]");
-                    } catch (DadosInexistentesException | IllegalStateException e) {
+                    } catch (DadosInexistentesException | IllegalStateException | ConflitoReservaException e) {
                         System.out.println("\n[ERRO AO CONFIRMAR RESERVA!]");
                         System.out.println(e.getMessage());
                     }
@@ -345,9 +348,10 @@ public class Main {
                     System.out.print("Digite o CPF do hóspede para realizar o check-in: ");
                     String cpfCheckIn = scanner.nextLine().trim();
                     try {
-                        Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckIn);
+                        Reserva reserva = hotel.buscarReservasPorCpf(cpfCheckIn).stream().findFirst()
+                                .orElseThrow(() -> new DadosInexistentesException("Nenhuma reserva encontrada."));
                         System.out.println("\n[RESERVA ENCONTRADA!]");
-                        reserva.realizarCheckIn();
+                        hotel.realizarCheckIn(reserva.getId());
                         System.out.println("\n[CHECK-IN REALIZADO COM SUCESSO!]");
                     } catch (DadosInexistentesException | IllegalStateException e) {
                         System.out.println("\n[ERRO AO REALIZAR CHECK-IN!]");
@@ -365,9 +369,10 @@ public class Main {
                     System.out.print("Digite o CPF do hóspede para realizar o check-out: ");
                     String cpfCheckOut = scanner.nextLine().trim();
                     try {
-                        Reserva reserva = hotel.buscarReservaPorCpf(cpfCheckOut);
+                        Reserva reserva = hotel.buscarReservasPorCpf(cpfCheckOut).stream().findFirst()
+                                .orElseThrow(() -> new DadosInexistentesException("Nenhuma reserva encontrada."));
                         System.out.println("\n[RESERVA ENCONTRADA!]");
-                        reserva.realizarCheckOut();
+                        hotel.realizarCheckOut(reserva.getId());
                         System.out.println("\n[CHECK-OUT REALIZADO COM SUCESSO!]");
                     } catch (DadosInexistentesException | IllegalStateException e) {
                         System.out.println("\n[ERRO AO REALIZAR CHECK-OUT!]");
@@ -381,7 +386,8 @@ public class Main {
                     String cpfDeletarReserva = scanner.nextLine().trim();
 
                     try {
-                        Reserva reserva = hotel.buscarReservaPorCpf(cpfDeletarReserva);
+                        Reserva reserva = hotel.buscarReservasPorCpf(cpfDeletarReserva).stream().findFirst()
+                                .orElseThrow(() -> new DadosInexistentesException("Nenhuma reserva encontrada."));
                         System.out.println("\n[RESERVA ENCONTRADA!]");
                         hotel.excluirReserva(reserva);
                         System.out.println("\n[RESERVA DELETADA COM SUCESSO!]");
