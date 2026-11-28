@@ -58,10 +58,11 @@ public abstract class Quarto implements Reservavel {
         if (precoBase == null) {
             throw new DadosNaoInformadosException("Preço base deve ser informado.");
         }
-        if (precoBase.compareTo(BigDecimal.ZERO) <= 0) {
+        BigDecimal normalizado = precoBase.setScale(2, RoundingMode.HALF_UP);
+        if (normalizado.compareTo(BigDecimal.ZERO) <= 0) {
             throw new DadosInvalidosException("Preço base deve ser maior que zero.");
         }
-        this.precoBase = precoBase.setScale(2, RoundingMode.HALF_UP);
+        this.precoBase = normalizado;
     }
 
     public int getCapacidade() {
