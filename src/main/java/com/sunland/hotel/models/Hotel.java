@@ -48,10 +48,10 @@ public class Hotel {
     }
 
     /**
-     * Adiciona um hóspede garantindo unicidade do CPF normalizado.
+     * Adiciona um hóspede garantindo unicidade do CPF normalizado e do e-mail.
      *
      * @throws DadosNaoInformadosException se {@code hospede} for null
-     * @throws ConflitoReservaException se já existir hóspede com o mesmo CPF
+     * @throws ConflitoReservaException se já existir hóspede com o mesmo CPF ou e-mail
      */
     public void adicionarHospede(Hospede hospede) {
         if (hospede == null) {
@@ -61,6 +61,10 @@ public class Hotel {
             if (existente.getCpf().equals(hospede.getCpf())) {
                 throw new ConflitoReservaException(
                         "Já existe um hóspede cadastrado com o CPF " + hospede.getCpfFormatado() + ".");
+            }
+            if (existente.getEmail().equals(hospede.getEmail())) {
+                throw new ConflitoReservaException(
+                        "Já existe um hóspede cadastrado com o email " + hospede.getEmail() + ".");
             }
         }
         hospedes.add(hospede);
