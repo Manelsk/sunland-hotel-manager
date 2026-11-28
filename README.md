@@ -1,195 +1,146 @@
+# Sunland Hotel Manager (`legacy-java` — v1.0-java)
 
-Sunland Hotel Manager
+Versão **Legacy Java** consolidada do **Sunland Hotel Manager** (sistema de gerenciamento hoteleiro orientado a objetos), refatorada com **Java 21**, **Maven**, **JUnit 5** e **JaCoCo** antes da evolução principal do projeto para **Python + API REST** na branch `Main`.
 
-Sistema de gerenciamento de hotel desenvolvido em Java utilizando Programação Orientada a Objetos.
+---
 
+## Melhorias Aplicadas na Versão `v1.0-java`
 
-Como executar:
+- **Build e Estrutura Padrão Maven (`com.sunland.hotel`):** gerenciamento de dependências, compilação Java 21, suíte JUnit 5, relatório de cobertura JaCoCo e geração de Javadoc sob demanda (`target/site/apidocs`).
+- **Modelagem com Enums de Domínio:** substituição de strings mágicas por `StatusQuarto`, `TipoCama`, `TipoSuite` e `EstadoReserva` (com parsing case-insensitive).
+- **Precisão Financeira e Snapshot:** uso de `BigDecimal` (`RoundingMode.HALF_UP`, escala 2) em todas as diárias e congelamento do valor (`valorDiariaSnapshot` e `valorTotal`) na criação da reserva.
+- **Agenda por Intervalo de Datas (`LocalDate`):** reservas usam `dataCheckIn` e `dataCheckOut`, permitindo consultar disponibilidade por período (`[checkIn, checkOut)`) sem conflitos em check-out/check-in no mesmo dia.
+- **Prevenção de Overbooking:** revalidação de conflitos de agenda durante a confirmação de reservas pendentes (`ConflitoReservaException`).
+- **Validação Real de Hóspedes:** validação dos dígitos verificadores do CPF (módulo 11 + rejeição de dígitos repetidos), normalização de CPF (11 dígitos), unicidade de CPF e número de quarto, e validação estrita de e-mail.
+- **Integridade e Encapsulamento:** códigos/UUIDs únicos por entidade, bloqueio de exclusão insegura de hóspedes/quartos/reservas em aberto e listas imutáveis nos getters do `Hotel`.
+- **Testes Automatizados:** 55 testes unitários e de regra de negócio com **JUnit 5** (`HospedeTest`, `QuartoTest`, `ReservaTest`, `HotelTest`) e cobertura >85% nos pacotes de domínio via **JaCoCo**.
 
-Compile o projeto:
+---
 
+## Requisitos
+
+- **Java JDK 21**
+- **Apache Maven 3.9+**
+
+---
+
+## Como Executar e Testar
+
+### Rodar os testes JUnit 5 e gerar relatório JaCoCo
 ```bash
-javac -d bin src\models\*.java src\exceptions\*.java src\interfaces\*.java src\Main\Main.java 
+mvn clean test jacoco:report
 ```
-Execute:
+O relatório HTML de cobertura é gerado em `target/site/jacoco/index.html`.
 
+### Executar a aplicação CLI
 ```bash
-java -cp bin Main.Main
+mvn -q compile exec:java
 ```
 
-A documentação completa está disponível na pasta `docs/`.
-
-Após clonar o projeto, basta abrir:
-```text
-docs/index.html
+### Gerar Javadoc sob demanda
+```bash
+mvn javadoc:javadoc
 ```
-para acessar a documentação gerada pelo Javadoc.
+A documentação é gerada em `target/site/apidocs/index.html`.
 
-Conceitos de POO utilizados
+---
 
-- Encapsulamento
-- Herança
-- Polimorfismo
-- Abstração
-- Interfaces
-- Classes abstratas
-- Tratamento de exceções
-- Coleções (`ArrayList`)
+## Arquitetura de Domínio
 
-Projeto desenvolvido para fins academicos por Emanuel Victor Barros Bezerra.
+```mermaid
+classDiagram
+    class Reservavel {
+        <<interface>>
+        +ocupar() void
+        +liberar() void
+        +estaDisponivel() boolean
+        +calcularDiaria() BigDecimal
+    }
 
+    class Quarto {
+        <<abstract>>
+        -UUID id
+        -int numero
+        -BigDecimal precoBase
+        -int capacidade
+        -StatusQuarto status
+        +calcularDiaria()* BigDecimal
+        +exibirDescricao()* String
+    }
 
+    class QuartoSimples {
+        -boolean possuiArCondicionado
+        +calcularDiaria() BigDecimal
+    }
 
+    class QuartoDuplo {
+        -TipoCama tipoCama
+        -boolean possuiVaranda
+        +calcularDiaria() BigDecimal
+    }
 
-Diagrama de Classes pode ser visualizado atraves do PNG ou usando o codigo do PlantUml
+    class Suite {
+        -TipoSuite tipoSuite
+        +calcularDiaria() BigDecimal
+    }
 
+    class Hospede {
+        -UUID id
+        -String nome
+        -String cpf
+        -String email
+        +validaCpf(String) boolean
+        +normalizarCpf(String) String
+    }
 
-<img width="2922" height="1372" alt="Diagrama de Classes SHM-POO" src="https://github.com/user-attachments/assets/1592ab76-af3e-436b-9266-2a420d14c881" />
-     
-            @startuml
-            skinparam classAttributeIconSize 0
-                  
-            interface Reservavel {
-              + reservar() : void
-              + liberar() : void
-              + estaDisponivel() : boolean
-          }
-          
-          abstract class Quarto {
-              - numero : int
-              - precoBase : double
-              - capacidade : int
-              - status : String
-              + Quarto(numero : int, precoBase : double, capacidade : int)
-              + getNumero() : int
-              + getPrecoBase() : double
-              + getCapacidade() : int
-              + getStatus() : String
-              + setNumero(numero : int) : void
-              + setPrecoBase(precoBase : double) : void
-              + setCapacidade(capacidade : int) : void
-              - setStatus(status : String) : void
-              + estaDisponivel() : boolean
-              + reservar() : void
-              + liberar() : void
-              + {abstract} calcularDiaria() : double
-              + {abstract} exibirDescricao() : String
-          }
-          
-          
-          class QuartoSimples {
-              - possuiArCondicionado : boolean
-              + QuartoSimples(numero : int, precoBase : double, capacidade : int, possuiArCondicionado : boolean)
-              + setPossuiArCondicionado(possuiArCondicionado : boolean) : void
-              + isPossuiArCondicionado() : boolean
-              + calcularDiaria() : double
-              + exibirDescricao() : String
-          }
-          
-          class QuartoDuplo {
-              - tipoCama : String
-              - possuiVaranda : boolean
-              + QuartoDuplo(numero : int, precoBase : double, capacidade : int, tipoCama : String, possuiVaranda : Boolean)
-              + setTipoCama(tipoCama : String) : void
-              + getTipoCama() : String
-              + setPossuiVaranda(possuiVaranda : boolean) : void
-              + isPossuiVaranda() : boolean
-              + calcularDiaria() : double
-              + exibirDescricao() : String
-          }
-          
-          class Suite {
-              - tipoSuite : String
-              - {static} PRESIDENCIAL : String
-              - {static} EXECUTIVA : String
-              + Suite(numero : int, precoBase : double, capacidade : int, tipoSuite : String)
-              + getTipoSuite() : String
-              + setTipoSuite(tipoSuite : String) : void
-              + calcularDiaria() : double
-              + exibirDescricao() : String
-          }
-          
-          
-          class Hospede {
-              - nome : String
-              - cpf : String
-              - email : String
-              + Hospede(nome : String, cpf : String, email : String)
-              + {static} validaCpf(cpf : String) : boolean
-              + {static} validaEmail(email : String) : boolean
-              + setNome(nome : String) : void
-              + setCpf(cpf : String) : void
-              + setEmail(email : String) : void
-              + toString() : String
-              + getNome() : String
-              + getCpf() : String
-              + getEmail() : String
-          }
-          
-          class Reserva {
-              - hospede : Hospede
-              - quarto : Quarto
-              - qtdeDiarias : int
-              - estadoReserva : String
-              + Reserva(hospede : Hospede, quarto : Quarto, qtdeDiarias : int)
-              + confirmaReserva() : void
-              + setHospede(hospede : Hospede) : void
-              + setQuarto(quarto : Quarto) : void
-              + setQtdeDiarias(qtdeDiarias : int) : void
-              + getHospede() : Hospede
-              + getQuarto() : Quarto
-              + getQtdeDiarias() : int
-              + getEstadoReserva() : String
-              + realizarCheckIn() : void
-              + realizarCheckOut() : void
-              + calcularValorTotal() : double
-              + exibirDescricao() : String
-          }
-          
-          class Hotel {
-              - quartos : List<Quarto>
-              - hospedes : List<Hospede>
-              - reservas : List<Reserva>
-              + Hotel()
-              + adicionarQuarto(quarto : Quarto) : void
-              + adicionarHospede(hospede : Hospede) : void
-              + criarReserva(hospede : Hospede, quarto : Quarto, qtdeDiarias : int) : void
-              + buscarQuartoporNumero(numero : int) : Quarto
-              + buscarHospedePorCpf(cpf : String) : Hospede
-              + buscarReservaPorCpf(cpf : String) : Reserva
-              + excluirHospede(hospede : Hospede) : void
-              + excluirReserva(reserva : Reserva) : void
-              + excluirQuarto(quarto : Quarto) : void
-          }
-          
-          exception DadosInexistentesException {
-              + DadosInexistentesException(msg : String)
-          }
-          exception DadosInvalidosException {
-              + DadosInvalidosException(msg : String)
-          }
-          exception DadosNaoInformadosException {
-              + DadosNaoInformadosException(msg : String)
-          }
-          
-          
-            Reservavel <|.. Quarto : Implementa
-            Quarto <|-- QuartoSimples : Herda
-            Quarto <|-- QuartoDuplo : Herda
-            Quarto <|-- Suite : Herda
-          
-            Reserva "0..*" --> "1" Hospede : Associado a
-            Reserva "0..*" --> "1" Quarto : Alocado em
-          
-            Hotel "1" *--> "0..*" Quarto : Composto por
-            Hotel "1" *--> "0..*" Hospede : Composto por
-            Hotel "1" *--> "0..*" Reserva : Composto por
-          
-            Hotel ..> DadosInexistentesException : <<throws>>
+    class Reserva {
+        -UUID id
+        -LocalDate dataCheckIn
+        -LocalDate dataCheckOut
+        -BigDecimal valorDiariaSnapshot
+        -BigDecimal valorTotal
+        -EstadoReserva estadoReserva
+        +confirmar() void
+        +realizarCheckIn() void
+        +realizarCheckOut() void
+        +cancelar() void
+        +conflitaCom(LocalDate, LocalDate) boolean
+    }
 
-          }
-          Hotel ..> DadosNaoInformadosException : <<throws>>
-          Hospede ..> DadosInvalidosException : <<throws>>
+    class Hotel {
+        -List~Quarto~ quartos
+        -List~Hospede~ hospedes
+        -List~Reserva~ reservas
+        +criarReserva(...) Reserva
+        +confirmarReserva(UUID) void
+        +listarQuartosDisponiveis(LocalDate, LocalDate) List~Quarto~
+    }
 
+    Reservavel <|.. Quarto
+    Quarto <|-- QuartoSimples
+    Quarto <|-- QuartoDuplo
+    Quarto <|-- Suite
+    Hotel "1" *--> "0..*" Quarto
+    Hotel "1" *--> "0..*" Hospede
+    Hotel "1" *--> "0..*" Reserva
+    Reserva "*" --> "1" Hospede
+    Reserva "*" --> "1" Quarto
+```
 
-@enduml
+### Ciclo de Estados da Reserva
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDENTE
+    PENDENTE --> CONFIRMADA : confirmar()
+    PENDENTE --> CANCELADA : cancelar()
+    CONFIRMADA --> ATIVA : realizarCheckIn()
+    CONFIRMADA --> CANCELADA : cancelar()
+    ATIVA --> FINALIZADA : realizarCheckOut()
+    FINALIZADA --> [*]
+    CANCELADA --> [*]
+```
+
+---
+
+Projeto base desenvolvido originalmente para fins acadêmicos por **Emanuel Victor Barros Bezerra** e consolidado na versão `v1.0-java`.
