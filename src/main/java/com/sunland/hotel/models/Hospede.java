@@ -9,11 +9,15 @@ import java.util.regex.Pattern;
  * Representa um hóspede do hotel.
  *
  * A classe {@code Hospede} encapsula identificador único, nome, CPF normalizado
- * (com validação de dígitos verificadores) e e-mail válido.
+ * (com validação de formato e dígitos verificadores) e e-mail válido.
  */
 public class Hospede {
+    private static final Pattern NAME_PATTERN =
+            Pattern.compile("^\\p{L}+(?:[ '\\-]\\p{L}+)*$");
+    private static final Pattern CPF_FORMAT_PATTERN =
+            Pattern.compile("^(\\d{11}|\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2})$");
     private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+            Pattern.compile("^[A-Za-z0-9](?:[A-Za-z0-9+_.-]*[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z]{2,}$");
     private static final Pattern REPEATED_DIGITS_PATTERN = Pattern.compile("^(\\d)\\1{10}$");
 
     private final UUID id;
@@ -24,8 +28,8 @@ public class Hospede {
     /**
      * Constrói um novo hóspede validando e normalizando seus dados.
      *
-     * @param nome nome completo do hóspede (3 a 100 caracteres)
-     * @param cpf CPF válido com ou sem máscara
+     * @param nome nome completo do hóspede (somente letras, espaços, hífen ou apóstrofo entre letras)
+     * @param cpf CPF válido (11 dígitos ou XXX.XXX.XXX-XX)
      * @param email endereço de e-mail válido
      * @throws DadosInvalidosException se nome, CPF ou email forem inválidos
      */
@@ -34,6 +38,28 @@ public class Hospede {
         setNome(nome);
         setCpf(cpf);
         setEmail(email);
+    }
+
+    /**
+     * Valida e normaliza o nome do hóspede, aceitando apenas letras Unicode
+     * com espaços, apóstrofos ou hífens entre letras.
+     *
+     * @param nome nome informado
+     * @return {@code true} se o nome for válido; {@code false} caso contrário
+     */
+    public static boolean validaNome(String nome) {
+        if (nome == null) {
+            return false;
+        }
+        String normalizado = nome.trim().replaceAll("\\s+", " ");
+        if (normalizado.length() < 3 || normalizado.length() > 100) {
+            return false;
+        }
+        if (!NAME_PATTERN.matcher(normalizado).matches()) {
+            return false;
+        }
+        String apenasLetras = normalizado.replaceAll("[^\\p{L}]", "");
+        return apenasLetras.length() >= 3;
     }
 
     /**
@@ -50,19 +76,23 @@ public class Hospede {
     }
 
     /**
-     * Valida o CPF considerando exatamente 11 dígitos, rejeitando sequências repetidas
-     * e verificando os dois dígitos verificadores oficiais (módulo 11).
+     * Valida o CPF verificando o formato aceito (11 dígitos ou {@code XXX.XXX.XXX-XX}),
+     * rejeitando sequências repetidas e verificando os dois dígitos verificadores oficiais (módulo 11).
      *
-     * @param cpf CPF a ser validado (aceita pontuação)
+     * @param cpf CPF a ser validado
      * @return {@code true} se válido; {@code false} caso contrário
      */
     public static boolean validaCpf(String cpf) {
-        if (cpf == null || cpf.trim().isEmpty()) {
+        if (cpf == null) {
+            return false;
+        }
+        String texto = cpf.trim();
+        if (texto.isEmpty() || !CPF_FORMAT_PATTERN.matcher(texto).matches()) {
             return false;
         }
 
-        String digitos = normalizarCpf(cpf);
-        if (!digitos.matches("\\d{11}") || REPEATED_DIGITS_PATTERN.matcher(digitos).matches()) {
+        String digitos = normalizarCpf(texto);
+        if (REPEATED_DIGITS_PATTERN.matcher(digitos).matches()) {
             return false;
         }
 
@@ -86,7 +116,7 @@ public class Hospede {
     }
 
     /**
-     * Valida se o e-mail atende ao formato padrão {@code usuario@dominio.tld}.
+     * Valida se o e-mail atende ao formato padrão estrito {@code usuario@dominio.tld}.
      *
      * @param email endereço de e-mail a validar
      * @return {@code true} se válido; {@code false} caso contrário
@@ -96,7 +126,10 @@ public class Hospede {
             return false;
         }
         String normalizado = email.trim();
-        return !normalizado.isEmpty() && EMAIL_PATTERN.matcher(normalizado).matches();
+        if (normalizado.isEmpty() || normalizado.length() > 254 || normalizado.contains("..")) {
+            return false;
+        }
+        return EMAIL_PATTERN.matcher(normalizado).matches();
     }
 
     public UUID getId() {
@@ -108,14 +141,11 @@ public class Hospede {
     }
 
     public void setNome(String nome) {
-        if (nome == null) {
-            throw new DadosInvalidosException("Nome inválido.");
+        if (!validaNome(nome)) {
+            throw new DadosInvalidosException(
+                    "Nome inválido: use apenas letras (3 a 100 caracteres, sem números ou símbolos).");
         }
-        String normalizado = nome.trim();
-        if (normalizado.length() < 3 || normalizado.length() > 100) {
-            throw new DadosInvalidosException("Nome inválido: deve ter entre 3 e 100 caracteres.");
-        }
-        this.nome = normalizado;
+        this.nome = nome.trim().replaceAll("\\s+", " ");
     }
 
     /**
