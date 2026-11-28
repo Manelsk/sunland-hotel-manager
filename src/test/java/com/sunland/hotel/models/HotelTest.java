@@ -46,6 +46,12 @@ class HotelTest {
     }
 
     @Test
+    void deveRejeitarEmailDuplicadoMesmoComCapitalizacaoDiferente() {
+        Hospede mesmoEmail = new Hospede("Outro Hospede", "39053344705", "MARIA@HOTEL.COM");
+        assertThrows(ConflitoReservaException.class, () -> hotel.adicionarHospede(mesmoEmail));
+    }
+
+    @Test
     void deveRejeitarNumeroDeQuartoDuplicado() {
         Quarto duplicado = new Suite(101, new BigDecimal("500.00"), 2, TipoSuite.PRESIDENCIAL);
         assertThrows(ConflitoReservaException.class, () -> hotel.adicionarQuarto(duplicado));

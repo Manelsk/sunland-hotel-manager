@@ -66,6 +66,10 @@ class QuartoTest {
                 () -> new QuartoSimples(101, BigDecimal.ZERO, 1, false));
         assertThrows(DadosInvalidosException.class,
                 () -> new QuartoSimples(101, new BigDecimal("-10.00"), 1, false));
+        assertThrows(DadosInvalidosException.class,
+                () -> new QuartoSimples(101, new BigDecimal("0.001"), 1, false));
+        assertThrows(DadosInvalidosException.class,
+                () -> new QuartoSimples(101, new BigDecimal("0.004"), 1, false));
     }
 
     @Test

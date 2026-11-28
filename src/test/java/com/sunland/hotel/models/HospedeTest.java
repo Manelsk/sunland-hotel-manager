@@ -35,6 +35,17 @@ class HospedeTest {
         assertEquals("111.444.777-35", hospede.getCpfFormatado());
     }
 
+    @Test
+    void deveAceitarNomesComAcentosHifenEApostrofoENormalizarEspacos() {
+        Hospede h1 = new Hospede("  Maria   Silva  ", "52998224725", "maria@hotel.com");
+        Hospede h2 = new Hospede("João D'Ávila", "11144477735", "joao@hotel.com");
+        Hospede h3 = new Hospede("Ana-Maria Costa", "52998224725", "ana@hotel.com");
+
+        assertEquals("Maria Silva", h1.getNome());
+        assertEquals("João D'Ávila", h2.getNome());
+        assertEquals("Ana-Maria Costa", h3.getNome());
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {
@@ -46,6 +57,9 @@ class HospedeTest {
         "52998224720",
         "52998224724",
         "529.982.247-00",
+        "abc52998224725",
+        "529@982#247-25",
+        "52.998.224-725",
         "abc.def.ghi-jk"
     })
     void deveRejeitarCpfsInvalidos(String cpfInvalido) {
@@ -56,8 +70,21 @@ class HospedeTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"  ", "Jo", "A"})
-    void deveRejeitarNomesCurtosOuVazios(String nomeInvalido) {
+    @ValueSource(strings = {
+        "  ",
+        "Jo",
+        "A",
+        "A B",
+        "Maria 123",
+        "João @#$",
+        "12345",
+        "---",
+        "Maria--Silva",
+        "-Maria",
+        "Maria-"
+    })
+    void deveRejeitarNomesCurtosVaziosOuComNumerosESimbolos(String nomeInvalido) {
+        assertFalse(Hospede.validaNome(nomeInvalido));
         assertThrows(DadosInvalidosException.class,
                 () -> new Hospede(nomeInvalido, "52998224725", "ana@exemplo.com"));
     }
@@ -71,11 +98,33 @@ class HospedeTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"a@b", "a@@b.com", "@exemplo.com", "usuario@", "sem-arroba.com", "a b@c.com"})
+    @ValueSource(strings = {
+        "a@b",
+        "a@@b.com",
+        "@exemplo.com",
+        "usuario@",
+        "sem-arroba.com",
+        "a b@c.com",
+        ".maria@hotel.com",
+        "maria.@hotel.com",
+        "maria..silva@hotel.com",
+        "maria@-hotel.com",
+        "maria@hotel-.com",
+        "maria@hotel..com",
+        "maria@hotel.123"
+    })
     void deveRejeitarEmailsInvalidos(String emailInvalido) {
         assertFalse(Hospede.validaEmail(emailInvalido));
         assertThrows(DadosInvalidosException.class,
                 () -> new Hospede("Ana Clara", "52998224725", emailInvalido));
+    }
+
+    @Test
+    void deveRejeitarEmailMaiorQue254Caracteres() {
+        String emailLongo = "a".repeat(245) + "@hotel.com";
+        assertFalse(Hospede.validaEmail(emailLongo));
+        assertThrows(DadosInvalidosException.class,
+                () -> new Hospede("Ana Clara", "52998224725", emailLongo));
     }
 
     @Test
