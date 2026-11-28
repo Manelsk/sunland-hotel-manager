@@ -1,4 +1,4 @@
-package models;
+package com.sunland.hotel.models;
 
 /**
  * Representa um quarto simples do hotel que pode conter ar condicionado.

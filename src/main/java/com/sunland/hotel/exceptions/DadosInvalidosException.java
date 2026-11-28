@@ -1,4 +1,4 @@
-package exceptions;
+package com.sunland.hotel.exceptions;
 
 /**
  * Exceção lançada quando dados fornecidos são inválidos.

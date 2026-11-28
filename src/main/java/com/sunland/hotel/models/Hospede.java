@@ -1,6 +1,6 @@
-package models;
+package com.sunland.hotel.models;
 
-import exceptions.DadosInvalidosException;
+import com.sunland.hotel.exceptions.DadosInvalidosException;
 
 /**
  * Representa um hóspede do hotel.

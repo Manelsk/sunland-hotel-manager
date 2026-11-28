@@ -1,4 +1,4 @@
-package interfaces;
+package com.sunland.hotel.interfaces;
 
 /**
  * Interface que define o contrato para objetos que podem ser reservados.

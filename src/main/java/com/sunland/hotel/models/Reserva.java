@@ -1,4 +1,4 @@
-package models;
+package com.sunland.hotel.models;
 
 /**
  * Representa uma reserva de quarto no hotel.

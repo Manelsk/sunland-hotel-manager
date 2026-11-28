@@ -1,4 +1,4 @@
-package models;
+package com.sunland.hotel.models;
 
 /**
  * Representa um quarto duplo do hotel que pode conter varanda.

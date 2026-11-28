@@ -1,5 +1,5 @@
-package models;
-import interfaces.Reservavel;
+package com.sunland.hotel.models;
+import com.sunland.hotel.interfaces.Reservavel;
 
 /**
  * Representa um quarto do hotel com funcionalidades de reserva.

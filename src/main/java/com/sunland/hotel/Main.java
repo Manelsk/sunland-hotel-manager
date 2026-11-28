@@ -1,8 +1,8 @@
-package Main;
+package com.sunland.hotel;
 
 import java.util.Scanner;
-import models.*;
-import exceptions.*;
+import com.sunland.hotel.models.*;
+import com.sunland.hotel.exceptions.*;
 
 public class Main {
 

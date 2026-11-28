@@ -1,7 +1,7 @@
-package models;
+package com.sunland.hotel.models;
 
-import exceptions.DadosInexistentesException;
-import exceptions.DadosNaoInformadosException;
+import com.sunland.hotel.exceptions.DadosInexistentesException;
+import com.sunland.hotel.exceptions.DadosNaoInformadosException;
 import java.util.ArrayList;
 import java.util.List;
 
